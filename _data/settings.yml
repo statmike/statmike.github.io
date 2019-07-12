@@ -18,7 +18,7 @@ menu_settings:
       url: '/contact'
 
 footer_settings:
-  footer_tagline: {{{Creative, Curious, Compassionate},{Leader, Father, Believer},{Coder, Data Gentleman, Swell Bayesian}}}
+  footer_tagline: encodeURI("{{Creative, Curious, Compassionate},{Leader, Father, Believer},{Coder, Data Gentleman, Swell Bayesian}}")
 
 hero_settings:
   overlay_opacity: 0.8
