@@ -2,7 +2,7 @@
 title: About me
 subtitle: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Believer},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
 description: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Believer},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
-featured_image: /images/demo/about.jpg
+featured_image: /images/aboveclouds.jpg
 ---
 
 ## Mike Henderson
