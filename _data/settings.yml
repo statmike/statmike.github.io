@@ -8,17 +8,19 @@ header_settings:
 
 menu_settings:
   menu_items:
-    - title: 'Projects'
-      url: '/'
-    - title: 'Blog'
-      url: '/blog/'
+#    - title: 'Projects'
+#      url: '/'
+#    - title: 'Blog'
+#      url: '/blog/'
     - title: 'About'
       url: '/about'
+    - title: 'Resume'
+      url: '/resume'
     - title: 'Contact'
       url: '/contact'
 
 footer_settings:
-  footer_tagline: "{{Creative, Curious, Compassionate}, {Leader, Father, Believer}, {Coder, Data Gentleman, Swell Bayesian}}"
+  footer_tagline: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Believer},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
 
 hero_settings:
   overlay_opacity: 0.8
@@ -27,7 +29,7 @@ post_settings:
   grid_spacing: 10
 
 contact_settings:
-  form_action: 'https://formspree.io/'
+  form_action: 'https://formspree.io/statmike+formspree@gmail.com'
   confirmation_url: '/thanks'
   email_subject: 'Contact form submission'
   send_button_text: 'Send Message'
