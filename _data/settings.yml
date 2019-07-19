@@ -35,7 +35,7 @@ contact_settings:
   send_button_text: 'Send Message'
 
 social_settings:
-  facebook_url: 'https://www.facebook.com/statmike'
+  facebook_url: ''
   twitter_url: 'https://www.twitter.com/statmike'
   instagram_url: 'https://www.instagram.com/statmike'
   snapchat_url: ''
