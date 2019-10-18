@@ -1,7 +1,7 @@
 ---
-title: Thank you
+title: Thank you!
 subtitle: Your message was sent successfully.
-description: A sleek, modern Jekyll theme for personal websites.
+description: I look forward to our conversation.
 featured_image: /images/redline.jpeg
 ---
 
