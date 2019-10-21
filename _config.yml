@@ -1,5 +1,8 @@
 site: STATMIKE
 
+url:
+baseurl:
+
 collections:
   pages:
     output: true
@@ -51,3 +54,4 @@ plugins:
 
 paginate: 6
 paginate_path: "/blog/page:num/"
+  
