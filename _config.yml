@@ -1,6 +1,6 @@
 site: STATMIKE
 
-url:
+url: https://statmike.com
 baseurl:
 
 collections:
@@ -54,4 +54,3 @@ plugins:
 
 paginate: 6
 paginate_path: "/blog/page:num/"
-  

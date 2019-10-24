@@ -12,6 +12,8 @@ menu_settings:
       url: '/'
     - title: 'The Analytics Blog'
       url: '/blog/'
+    - title: 'Repositories'
+      url: '/repos'
     - title: 'About'
       url: '/about'
     - title: 'Resume'
