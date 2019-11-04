@@ -37,8 +37,7 @@ resourceGroup=staticJekyllCommenting
 storageName=funcstorehere
 functionAppName=jekyllCommenting
 gitrepo=https://github.com/statmike/jekyll-blog-comments-azure
-token=
-#token=<token here>
+token=<token here>
 
 # Enable authenticated git deployment in your subscription from a private repo.
 az functionapp deployment source update-token \
