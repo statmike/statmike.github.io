@@ -1,0 +1,67 @@
+I heavily relied on: https://haacked.com/archive/2018/06/24/comments-for-jekyll-blogs/
+
+I chose to setup the azure function first by forking the haacked fork of jekyll-blog-comments_azure:
+https://github.com/statmike/jekyll-blog-comments-azure
+  I combined steps 2 and 3 and used a script to do the work:
+    in github: create a PAT under developer settings with admin: repo_hook, repo
+    in azure portal go to command line and run script below to:
+      setup names as variables
+      connect github with token
+      create resource resource
+      create storage in resource group
+      create function app and connect to github repo
+      fix it
+        in portal go to the function app overview:
+          click funtion app settings and change runtime to version 1
+        in portal go to the function app overview
+          click deployment options configured with ExternalGit and click sync
+      add app settings
+        in portal go the function app overview and click configuration
+          under application settings add the key value pairs
+          make sure you click save
+      got to the function PostComment and get the function URL:
+        https://jekyllcommenting.azurewebsites.net/api/PostComment
+
+The next step was updating the jekyll site in github:
+
+
+
+
+
+
+
+#!/bin/bash
+
+# Function app and storage account names must be unique.
+resourceGroup=staticJekyllCommenting
+storageName=funcstorehere
+functionAppName=jekyllCommenting
+gitrepo=https://github.com/statmike/jekyll-blog-comments-azure
+token=07a4026128c12181abadf97f97e604c803163a32
+#token=<token here>
+
+# Enable authenticated git deployment in your subscription from a private repo.
+az functionapp deployment source update-token \
+  --git-token $token
+
+# Create a resource group.
+az group create \
+  --name $resourceGroup \
+  --location eastUS
+
+# Create an Azure storage account in the resource group.
+az storage account create \
+  --name $storageName \
+  --location eastus \
+  --resource-group $resourceGroup \
+  --sku Standard_LRS
+
+# Create a function app with source files deployed from the specified GitHub repo.
+az functionapp create \
+  --name $functionAppName \
+  --storage-account $storageName \
+  --consumption-plan-location eastus \
+  --resource-group $resourceGroup \
+  --deployment-source-url $gitrepo \
+  --deployment-source-branch master \
+  --runtime dotnet
