@@ -32,12 +32,16 @@ defaults:
       type: "posts"
     values:
       layout: "post"
+      author: statmike
+      commenting: open
   -
     scope:
       path: ""
       type: "projects"
     values:
       layout: "project"
+      author: statmike
+      commenting: open
 
 markdown: kramdown
 
@@ -54,3 +58,14 @@ plugins:
 
 paginate: 6
 paginate_path: "/blog/page:num/"
+
+emptyArray: []
+
+comments:
+ receiver: https://jekyllcommenting.azurewebsites.net/api/PostComment
+
+authors:
+ statmike:
+   name: statmike
+   email: statmike@gmail.com
+   url: https://statmike.com
