@@ -1,0 +1,25 @@
+I setup the site to use google analytics
+
+view the site changes in this commit:
+https://github.com/statmike/statmike.github.io/commit/293efec7c8abc7097e711362322f4ba2db0cb577
+
+the rest of the setup was done in google analytics where I got the code snippet in
+_includes/googleanalytics.html
+
+which I edited to call the variable {{site.google_analytics}}
+
+which I stored in _config.yml as the value
+
+The %include is placed in the head for my site which is in
+_layouts/default.html
+
+  on most sites this is in _includes/head.html or header.html
+  but in my case this file is for a <header> block which is repeated multiple time on some pages
+
+The %include in the head block is in a conditional loop
+  jekyll.environment == 'production'
+    this is the default on github pages
+    the default with jekyll serve locally is 'development'
+    this prevent my dev work from being tracked by google google_analytics
+
+    

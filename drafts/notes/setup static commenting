@@ -23,10 +23,17 @@ https://github.com/statmike/jekyll-blog-comments-azure
         https://jekyllcommenting.azurewebsites.net/api/PostComment
 
 The next step was updating the jekyll site in github:
+  edits to:
+    _config.yml
+    _includes/comment*.html
+    _layouts/post*,project*
 
-
-
-
+I updated this to include the sentiment analysis setup from the original master for jekyll-blog-comments-azurewebsites
+  merged the original into my fork (which was a fork of the original...)
+  in azure portal I re-synched the github deployment
+  set azure coganative service per the readme in the repo
+  added the new key pairs in azure
+  this adds a score: ## in the pull request where 1 is positive and 0 is negative, with decimal shades between
 
 
 

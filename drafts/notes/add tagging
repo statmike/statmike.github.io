@@ -1,0 +1,25 @@
+basing this work on this blog post:
+https://longqian.me/2017/02/09/github-jekyll-tag/
+which is also referenced on this blog
+http://www.plainionist.net/Blogging-with-Jekyll-Tags-Series/
+
+the first commit of this feature: 
+
+overview for my memory:
+for a post, add the tags: to the top of each post
+create _includes/tags.html
+  this is a liquid script that creates site.tags
+%include tags.html in the head block
+  this is in _layouts/default.html
+  near the google analytics include
+edit the layout for post to include tags in _layouts/post.html
+  [??] make this pretty - shows up on any single blog post in the header
+create a tag page as _layouts/tagpage.html
+  [??] make this pretty - creates a page when you click a tag in a blog post header or the tag cloud on the main blog page
+build tag pages
+  create a folder for this as /tag
+  create markdown file for each tag here: like types-of-computing.md
+create the tag cloud
+  create _includes/tagcloud.html
+  add this to the main blog landing page blog/index.html
+  [??] make this pretty
