@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Blog
-description: What am I up to?
+title: The Analytics Blog
+description: Topics I find interesting
 featured_image: /images/goldengate.jpg
 ---
 
@@ -14,7 +14,6 @@ featured_image: /images/goldengate.jpg
 	<div class="wrap">
 
 		<h1>The Analytics Blog</h1>
-		<h1>What I've been up to</h1>
 		<p>Topics I find interesting</p>
 
 	</div>
@@ -44,6 +43,12 @@ featured_image: /images/goldengate.jpg
 		</article>
 
 		{% endfor %}
+
+		<article class="post">
+			<div class="wrap">
+				{% include tagcloud.html %}
+			</div>
+		</article>
 
 	</div>
 
