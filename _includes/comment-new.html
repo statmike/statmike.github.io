@@ -1,23 +1,37 @@
-<h3>Leave a Comment:</h3>
-<form action="/fake" method="post" id="commentform" class="form-horizontal">
-  <fieldset id="commentfields">
-    <input name="redirect" type="hidden" value="{{ site.url }}/thanks">
-    <input name="post_id" type="hidden" value="{{ slug }}">
-    <input name="comment-site" type="hidden" value="{{ site.url }}">
-    <textarea name="message" id="message" placeholder="Continue the discussion."></textarea>
 
-    <label for="name">Name/alias <span>(Required, displayed)</span></label>
-    <input type="text" name="name" id="name" placeholder="Name" />
+<div class="contact-form">
+  <h2>Leave a Comment:</h2>
+  <form action="/fake" method="post" id="commentform" class="form-horizontal">
+    <fieldset id="commentfields">
 
-    <label for="email">Email <span>(Required, not shown)</span></label>
-    <input type="text" name="email" id="email" placeholder="myemail@somedomain.com" />
+      <input name="redirect" type="hidden" value="{{ site.url }}/thanks">
+      <input name="post_id" type="hidden" value="{{ slug }}">
+      <input name="comment-site" type="hidden" value="{{ site.url }}">
 
-    <label for="url">Website <span>(Optional, displayed)</span></label>
-    <input type="text" name="url" id="url" placeholder="https://mywebsite.com" />
+      <div class="contact-form__item">
+        <label for="name" class="contact-form__label">Name/alias (Required, displayed)</label>
+        <input type="text" name="name" id="name" placeholder="Name" class="contact-form__input" />
+      </div>
 
-    <button onclick="setupForm()" type="button" class="btn btn-primary" id="commentbutton">Submit</button>
-  </fieldset>
-</form>
+      <div class="contact-form__item">
+        <label for="email" class="contact-form__label">Email (Required, not shown)</label>
+        <input type="text" name="email" id="email" placeholder="myemail@somedomain.com" class="contact-form__input" />
+      </div>
+
+      <div class="contact-form__item">
+        <label for="url" class="contact-form__label">Website (Optional, displayed)</label>
+        <input type="text" name="url" id="url" placeholder="https://mywebsite.com" class="contact-form__input" />
+      </div>
+
+      <div class="contact-form__item">
+        <label for="messsage">Comment</label>
+        <textarea name="message" id="message" placeholder="Continue the discussion." class="contact-form__textarea"></textarea>
+      </div>
+
+      <button onclick="setupForm()" type="button" class="button" id="commentbutton">Submit</button>
+    </fieldset>
+  </form>
+</div>
 <script>
     function setupForm() {
       var status = document.getElementById('commentstatus')
