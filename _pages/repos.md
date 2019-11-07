@@ -8,3 +8,6 @@ featured_image: /images/aboveclouds.jpg
 ## Bayesian
 SAS PROC MCMC, Jags, Stan, more!
 * GitHub Repository: [Bayesian Analysis - Primarily SAS](https://github.com/statmike/Bayesian-Analysis--Primarily-SAS-)
+
+## More
+Check on my [GitHub account](https://www.github.com/statmike) for more public projects

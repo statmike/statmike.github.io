@@ -15,15 +15,21 @@ I am fanatical about computational engineering and work tirelessly to broaden my
 ### SAS; CARY, NORTH CAROLINA - OCTOBER 2012 - PRESENT
 
 **Senior Manager — April 2015 - PRESENT**  
-Leadership for a group of statisticians and specialist focused on solving problems facing hospital systems, insurance companies, pharmaceutical, device, and clinical research organizations.  A focus on automating processes, augmenting decision making, and efficient architectures that work in cloud and are scalable.  Projects include:
+Leadership for a group of statisticians and specialist focused on solving problems facing hospital systems, insurance companies, pharmaceutical, device, and clinical research organizations.  A focus on automating processes, augmenting decision making, and efficient architectures that work in cloud and are scalable.  
 
-* Scoring predictive models in a stream of data to trigger integrity feedback to providers
-* Building models with combinations of business rules and machine learning to detect fields needing review in electronic case report forms
-* Building a missing data imputation system using Bayesian MCMC methods
-* Setting up a parallel execution system for sample size simulations of adaptive clinical trial designs
-* Creating a tipping point analysis system that runs in a parallel computing environment
-* Building a missing value imputation system to examine the effect of dropout rates on outcomes for treatment groups and subgroups in clinical trials
-* Designing a Bayesian computation simulation to examine the response rate relative to dosing in early phase clinical trials
+* Projects include:
+  * Architecting a bursting model of distributed and parallelized computation for statistical simulations where users simply call functions that initiate, start, orchestrate, and shutdown clusters of compute in cloud services (AWS, Azure, GCP)
+  * Scoring predictive models in a stream of data to trigger integrity feedback to providers
+  * Building models with combinations of business rules and machine learning to detect fields needing review in electronic case report forms
+  * Building a missing data imputation system using Bayesian MCMC methods
+  * Setting up a parallel execution system for sample size simulations of adaptive clinical trial designs
+  * Creating a tipping point analysis system that runs in a parallel computing environment
+  * Building a missing value imputation system to examine the effect of dropout rates on outcomes for treatment groups and subgroups in clinical trials
+  * Designing a Bayesian computation simulation to examine the response rate relative to dosing in early phase clinical trials
+* Industry Focus Examples:
+  * Member of SAS Global Industry Advisory Board for Health Care and Life Sciences focused on strategy for product development, organizational focus, partnerships and industry engagement
+  * Speaker at public workshop sponsored by the FDA: [Improving the Implementation of Risk-Based Monitoring Approaches of Clinical Investigations](./project/rbm)
+  * Maintain [public GitHub repositories](./repos) focused on the application and adoption of modern analytical methods for better inference and prediction
 
 **Manager - October 2013 - March 2015**  
 Promoted to manage a team focused on solving problems for all business areas of pharmaceutical, device, and CRO companies.  Continued to be hands on and solve problems while also mentoring and coaching a team focused on data management, analytics, and decision delivery challenges.  Worked with multiple companies to covert text from open narratives in adverse event reports to concepts and build predictive models that categorize events as high potential medically serious for expedited review and reporting.   Implemented forecast models for adverse events to show new ways to determine when particular drug/event combinations were anomalous and trigger investigation.
@@ -64,33 +70,42 @@ Lead statistician for a new program for cosmetic contact lenses.  While learning
 **Coursework:** Calculus, Differential Equations, Partial Differential Equations, Linear Algebra, Numerical Analysis, Number Theory, Complex Analysis, Mathematical Statistics I and II, Probability
 
 ## SKILLS
-- SAS (BASE, STAT, ETS, …)
-- SAS Viya (CASL)
-- R
-- PYTHON
-- GIT
-- GITHUB
-- INFERENTIAL STATISTICS
-- BAYESIAN INFERENCE
-- NONPARAMETRIC STATISTICS
-- CLINICAL TRIAL DESIGN
-- RISK BASED MONITORING
-- PREDICTIVE ANALYTICS
-- TEXT ANALYTICS
-- FORECASTING
-- SURVIVAL ANALYSIS
-- PRESENTATIONS
-- COMMUNICATION
-- DELEGATION
-- EDUCATION
-- SAMPLE SIZE TECHNIQUES
-- ITEM-RESPONSE THEORY
-- ANOMALY DETECTION IN CLINICAL TRIALS
-- PSYCHOMETRIC SCALE CREATION
-- COMPUTATIONAL ARCHITECTURES INCLUDING SMP, MPP AND DATA PARALLEL INCLUDING HADOOP, SPARK, SAS CAS
-- CONTAINERIZATION WITH DOCKER AND KUBERNETES
-- ORCHESTRATING HYBRID COMPUTE IN MS AZURE, AWS, AND GCP VIA VIRTUAL MACHINES AND CONTAINERIZATION.
-- STREAMING DATA ANALYSIS / KALMAN & BAYESIAN FILTERING
+- SAS
+  - 9.x (BASE, STAT, ETS, OR, QC, ...)
+  - SAS VIYA (CASL API's for R, Python, REST)
+- Open Source for Inference and Prediction Workflow
+  - R
+  - PYTHON
+  - GIT
+  - SPARK
+  - TensorFlow
+- GitHub, GitLab
+- Analytical Skills
+  - INFERENTIAL STATISTICS
+  - BAYESIAN INFERENCE
+  - NONPARAMETRIC STATISTICS
+  - PREDICTIVE ANALYTICS
+  - TEXT ANALYTICS
+  - FORECASTING
+  - SURVIVAL ANALYSIS
+- Life Science Skills
+  - RISK BASED MONITORING
+  - CLINICAL TRIAL DESIGN
+  - SAMPLE SIZE TECHNIQUES
+  - ITEM-RESPONSE THEORY
+  - ANOMALY DETECTION IN CLINICAL TRIALS
+  - PSYCHOMETRIC SCALE CREATION
+- Leadership Skills
+  - PRESENTATIONS
+  - COMMUNICATION
+  - DELEGATION
+  - EDUCATION
+  - CHANGE
+- Scalable Computing Skills
+  - COMPUTATIONAL ARCHITECTURES INCLUDING SMP, MPP AND DATA PARALLEL INCLUDING HADOOP, SPARK, SAS CAS
+  - CONTAINERIZATION WITH DOCKER AND KUBERNETES
+  - ORCHESTRATING HYBRID COMPUTE IN MS AZURE, AWS, AND GCP VIA VIRTUAL MACHINES AND CONTAINERIZATION.
+  - STREAMING DATA ANALYSIS / KALMAN & BAYESIAN FILTERING
 
 ## CONTACT
 <a href="/contact" class="button button--large">CONTACT ME</a>
