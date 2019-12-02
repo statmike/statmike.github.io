@@ -1,0 +1,12 @@
+from command line
+sudo gem install jekyll-gist
+or
+bundle add jekyll-gist
+
+added plugins: - jekyll-gist to _config.yml
+
+in your md use embed code from gist.github.com like:
+
+{% gist codehere %}
+
+{% gist codehere file.extension %}

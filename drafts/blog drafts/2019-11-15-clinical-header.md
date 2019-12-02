@@ -23,3 +23,7 @@ show edits to the code above that accomplish parallelizm
 
 ### talk about logs
 all in one, or one for each files
+
+### does embed work for examples?
+
+{% gist e2cdf32dbf012009ba238793ff16bfbe list_to_rows.sas %}
