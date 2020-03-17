@@ -5,7 +5,11 @@ clone: cloned repository to local: /Users/statmike/github/gifffer
 copy: /Users/statmike/github/gifffer/build/gifffer.min.js
 paste: /Users/statmike/github/statmike.github.io/js/gifffer.min.js
 
-edit: _layouts/default.html
-    add: <script src="/js/gifffer.min.js"></script>
+for pages where you want to use this (blog post, projects, ...)
+    add images with the IMG tag:
+        <img data-gifffer="/images/blog/sgf2020/Slide 9.gif">
+    put the SCRIPT blocks at the bottom of the post:
+        <script type="text/javascript" src="/js/gifffer.min.js"></script>
 
+        <script>window.onload=function(){Gifffer();}</script>
 
