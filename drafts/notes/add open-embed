@@ -3,11 +3,14 @@ for embedding audio files:
 instructions: https://jekyllcodex.org/without-plugin/open-embed/
 downloaded open-embed.html to _includes
 
-put this in bottome of layout document:
+put this in bottome of layout document: _layouts/default.html (near the footer include)
 {% include open-embed.html %}
 
-in your post:
+This works!
+in your post: 
 <p>/uploads/Paper_Navy_-_08_-_Swan_Song.mp3</p>
 
+
+Not yet working???
 linktoyour.mp3?autoplay=1&loop=1&controls=0
     here the 1/0 is true(1) false(0)
