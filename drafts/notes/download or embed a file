@@ -1,0 +1,8 @@
+these work:
+
+embed:
+<object data="/images/projects/rbm/RBM Data Analytics.pdf" width="1000" height="1000" type='application/pdf'></object>
+different medial types: https://en.wikipedia.org/wiki/Media_type
+
+download:
+<a href="/images/projects/rbm/RBM Data Analytics.pdf" download="download" target="_blank">Download Slides</a>
