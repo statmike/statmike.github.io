@@ -27,7 +27,48 @@ Preface
 ![](/images/blog/fizzbuzz/fizzbuzz.png)
 
 
-```sas {.line-numbers}
+general logic
+```
+Loop over positive integers
+	if divisble by 3 then fizz
+	if divisible by 5 then buzz
+	if divisible by 3 & 5 then fizzbuzz
+```
+
+efficiency
+```
+Loop over positive integers
+	if divisible by 3 then fizz
+		if divisible by 5 then fizzbuzz
+	else if divisible by 5 then buzz
+```
+
+sas version of the logic
+```sas
+do until(i = 10000);
+	i+1
+	/* if divide by 3 */
+	ifc(mod(i,3)=0,
+		/* else if divide by 5 then fizzbuzz, else fizz */
+		ifc(mod(i,5)=0,'FizzBuzz','Fizz'),
+	/* id divide by 5 then buzz */
+	ifc(mod(i,5)=0,'Buzz',
+	/* else nothing '' */
+	''))
+end;									
+```
+
+sas version condenced and output
+```sas
+do until(i = 10000);
+	i+1;
+	result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
+	if missing(result)=0 then output;
+end;
+```
+
+FizzBuzz with SAS
+```sas
 /* SAS: FizzBuzz with Data Step */
 	data FizzBuzz;
 		do until(i = 10000);
@@ -39,7 +80,7 @@ Preface
 ```
 
 
-
+Start a SAS Viya CAS session
 ```sas
 /* setup a cas session */
 	cas mysess;
@@ -47,7 +88,7 @@ Preface
 ```
 
 
-
+FizzBuzz with SAS Viya CAS - single thread
 ```sas
 /* single thread version */
 	data mycas.FizzBuzz / single=yes;
@@ -60,9 +101,9 @@ Preface
 ```
 
 
-
+FizzBuzz with SAS Viya CAS - all threads
 ```sas
-/* single thread version */
+/* many thread version */
 	data mycas.FizzBuzz / single=no;
 		do until(i = 10000);
 			i+1;
@@ -73,7 +114,7 @@ Preface
 ```
 
 
-
+How many computing threads are available to SAS Viya CAS in this environment?
 ```sas
 /* how many threads? hosts? */
 	data mycas.seethreads / single=no;
@@ -83,8 +124,7 @@ Preface
 	run;
 ```
 
-
-
+Log Results
 ```sas
 NOTE: Running DATA step in Cloud Analytic Services.
 sas-programming 3
@@ -102,13 +142,14 @@ NOTE: DATA statement used (Total process time):
 ```
 
 
-
+FizzBuzz on SAS Viya CAS - all threads doing unique work
 ```sas
-/* do the same size work on each thread in cas */
+/* do work on each thread in cas */
+	%LET fbsize = 10000;
 	data mycas.FizzBuzzMPP / single=no;
 		thread=_threadid_;
-		i = (thread - 1) * 10000; /* start value for i on the thread */
-		s = i + 10000; drop s; /* stop value for i on the thread */
+		i = (thread - 1) * &fbsize; /* start value for i on the thread */
+		s = i + &fbsize; drop s; /* stop value for i on the thread */
 		do until(i = s);
 			i+1;
 			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
@@ -118,39 +159,65 @@ NOTE: DATA statement used (Total process time):
 ```
 
 
-
+FizzBuzz on SAS Viya CAS - all threads doing unique work
 ```sas
-/* spread the work for &l over all threads */
-%let threads = 370;
+/* spread the work over all threads */
+%LET threads = 370;
+%LET fbsize = 10000;
 data mycas.FizzBuzzMPP / single=no;
-	extras = mod(&l,&threads-1);
-	part_size = int(&l/(&threads-1)); drop part_size;
+	extras = mod(&fbsize,&threads-1); drop extras;
+	part_size = int(&fbsize/(&threads-1)); drop part_size;
 	thread=_threadid_;
 
-  i=(thread-1)*part_size;
-  s=i+part_size; drop s;
-  if thread = &threads then do;
-    i=&l-extras;
-    s=&l;
-  end;
-  do until(i=s);
-      i+1;
-      result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-      if result in ('Fizz','Buzz','FizzBuzz') then output;
-  end;
+	i = (thread - 1) * part_size;
+	s = i + part_size; drop s;
+	if thread = &threads then do;
+		i = &fbsize - extras;
+		s = &fbsize;
+	end;
+	do until(i = s);
+		i+1;
+		result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
+		if missing(result)=0 then output;
+	end;
 run;
 ```
 
 
+FizzBuzz on SAS Viya CAS with CASL code from PROC CAS
 ```sas
-%let l=1000000; * make this larger and rerun to show scalability;
+%LET threads = 370;
+%LET fbsize=10000;
 proc cas;
-	datastep.runcode / code="" single='no';
+	dscode="
+		data FizzBuzzMPP;
+			extras = mod(&fbsize,&threads-1); drop extras;
+			part_size = int(&fbsize/(&threads-1)); drop part_size;
+			thread=_threadid_;
+
+			i = (thread - 1) * part_size;
+			s = i + part_size; drop s;
+			if thread = &threads then do;
+				i = &fbsize - extras;
+				s = &fbsize;
+			end;
+			do until(i = s);
+				i+1;
+				result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
+				if missing(result)=0 then output;
+			end;
+		run;";
+	datastep.runcode / code=dscode single='no';
 run;
 ```
 
-
+End SAS Viya CAS session
 ```sas
 /* end the cas session */
 	cas mysess clear;
+```
+
+Running from Python Via SWAT
+```python
+import swat
 ```
