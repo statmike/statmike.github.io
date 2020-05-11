@@ -1,31 +1,28 @@
 ---
 title: 'Easy Threading with SAS Viya'
 date: 2020-05-02 00:00:00
-description: An example of simple threaded programming with SAS Viya's CASL language
+description: A classic programming challenge addressed with SAS, including a highly multi-threaded twist!
 featured_image: '/images/blog/fizzbuzz/fizzbuzz.png'
 tags: types-of-computing sas sas-viya casl
 ---
 
-## in progress
+## (in progress) A classic programming challenge addressed with SAS, including a highly multi-threaded twist!
 
-Preface
-- Introduce the reason and the challenge
-- Motivate concurrency
-- Incremental approach
-    - logic
-    - logic in sas code
-    - SAS 9
-    - SAS Viya - CAS single threaded
-    - SAS Viya - CAS concurrent
-    - SAS Viya - CAS concurrent spread out
-    - SAS Viya - CASL
-    - Python - SWAT to CASL
-- Other uses!
+Table of Contents
+- [FizzBuzz logic](#fizzbuzz-logic)
+- [FizzBuzz with SAS](#fizzbuzz-with-sas)
+- FizzBuzz with SAS Viya's CAS engine
+	- [Replicating the single-threaded approach of SAS](#replicating-the-single-threaded-approach-of-sas)
+	- [Invoking threads](#invoking-threads)
+	- [Understanding threads](#understanding-threads)
+	- [Putting all threads to work](#putting-all-threads-to-work)
+	- [Orchestrating threads to work together](#orchestrating-threads-to-work-together)
+- Bonus Sections
+	- [Using SAS Viya CASL coding](#using-sas-viya-casl-coding)
+	- [Using SAS Viya CASL coding from Python](#using-sas-viya-casl-coding-from-python)
 
 ---
-
-![](/images/blog/fizzbuzz/fizzbuzz.png)
-
+## FizzBuzz Logic
 
 general logic
 ```
@@ -42,6 +39,9 @@ Loop over positive integers
 		if divisible by 5 then fizzbuzz
 	else if divisible by 5 then buzz
 ```
+
+---
+## FizzBuzz with SAS
 
 sas version of the logic
 ```sas
@@ -79,6 +79,8 @@ FizzBuzz with SAS
 	run;
 ```
 
+---
+## Replicating the single-threaded approach of SAS
 
 Start a SAS Viya CAS session
 ```sas
@@ -100,6 +102,8 @@ FizzBuzz with SAS Viya CAS - single thread
 	run;
 ```
 
+---
+## Invoking threads
 
 FizzBuzz with SAS Viya CAS - all threads
 ```sas
@@ -113,6 +117,8 @@ FizzBuzz with SAS Viya CAS - all threads
 	run;
 ```
 
+---
+## Understanding threads
 
 How many computing threads are available to SAS Viya CAS in this environment?
 ```sas
@@ -141,6 +147,8 @@ NOTE: DATA statement used (Total process time):
       cpu time            0.01 seconds
 ```
 
+---
+## Putting all threads to work
 
 FizzBuzz on SAS Viya CAS - all threads doing unique work
 ```sas
@@ -158,6 +166,8 @@ FizzBuzz on SAS Viya CAS - all threads doing unique work
 	run;
 ```
 
+---
+## Orchestrating threads to work together
 
 FizzBuzz on SAS Viya CAS - all threads doing unique work
 ```sas
@@ -183,6 +193,8 @@ data mycas.FizzBuzzMPP / single=no;
 run;
 ```
 
+---
+## Using SAS Viya CASL coding
 
 FizzBuzz on SAS Viya CAS with CASL code from PROC CAS
 ```sas
@@ -211,11 +223,16 @@ proc cas;
 run;
 ```
 
+---
+
 End SAS Viya CAS session
 ```sas
 /* end the cas session */
 	cas mysess clear;
 ```
+
+---
+## Using SAS Viya CASL coding from Python
 
 Running from Python Via SWAT
 ```python
