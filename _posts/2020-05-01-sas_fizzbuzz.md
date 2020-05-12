@@ -79,6 +79,14 @@ FizzBuzz with SAS
 	run;
 ```
 
+```
+NOTE: The data set WORK.FIZZBUZZ has 4667 observations and 2 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.00 seconds
+      cpu time            0.01 seconds
+```
+![](../images/blog/fizzbuzz/fizzbuzz_sas.png)
+
 ---
 ## Replicating the single-threaded approach of SAS
 
@@ -89,6 +97,17 @@ Start a SAS Viya CAS session
 	libname mycas cas sessref=mysess;
 ```
 
+```
+NOTE: The session MYSESS connected successfully to Cloud Analytic Services eecucs05.unx.sas.com using port 5570. The UUID is 
+      30195d31-43df-e240-8ba1-f3d67f22bab3. The user is mihend and the active caslib is CASUSERHDFS(mihend).
+NOTE: The SAS option SESSREF was updated with the value MYSESS.
+NOTE: The SAS macro _SESSREF_ was updated with the value MYSESS.
+NOTE: The session is using 27 workers.
+77    libname mycas cas sessref=mysess;
+NOTE: Libref MYCAS was successfully assigned as follows: 
+      Engine:        CAS 
+      Physical Name: 30195d31-43df-e240-8ba1-f3d67f22bab3
+```
 
 FizzBuzz with SAS Viya CAS - single thread
 ```sas
@@ -100,6 +119,14 @@ FizzBuzz with SAS Viya CAS - single thread
 			if missing(result)=0 then output;
 		end;
 	run;
+```
+
+```
+NOTE: Running DATA step in Cloud Analytic Services.
+NOTE: The table FizzBuzz in caslib CASUSERHDFS(mihend) has 4667 observations and 2 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.21 seconds
+      cpu time            0.00 seconds
 ```
 
 ---
@@ -117,6 +144,16 @@ FizzBuzz with SAS Viya CAS - all threads
 	run;
 ```
 
+```
+NOTE: Running DATA step in Cloud Analytic Services.
+NOTE: The table FizzBuzz in caslib CASUSERHDFS(mihend) has 1726790 observations and 2 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.32 seconds
+      cpu time            0.00 seconds
+```
+
+![](../images/blog/fizzbuzz/fizzbuzz_cas1.png)
+
 ---
 ## Understanding threads
 
@@ -130,22 +167,7 @@ How many computing threads are available to SAS Viya CAS in this environment?
 	run;
 ```
 
-Log Results
-```sas
-NOTE: Running DATA step in Cloud Analytic Services.
-sas-programming 3
-sas-programming 1
-sas-programming 7
-sas-programming 2
-sas-programming 4
-sas-programming 5
-sas-programming 6
-sas-programming 8
-NOTE: The table seethreads in caslib CASUSER(sasdemo) has 8 observations and 2 variables.
-NOTE: DATA statement used (Total process time):
-      real time           0.03 seconds
-      cpu time            0.01 seconds
-```
+![](../images/blog/fizzbuzz/fizzbuzz_cas2.png)
 
 ---
 ## Putting all threads to work
@@ -165,6 +187,8 @@ FizzBuzz on SAS Viya CAS - all threads doing unique work
 		end;
 	run;
 ```
+
+![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
 
 ---
 ## Orchestrating threads to work together
@@ -193,6 +217,47 @@ data mycas.FizzBuzzMPP / single=no;
 run;
 ```
 
+```
+NOTE: Running DATA step in Cloud Analytic Services.
+NOTE: The table FizzBuzzMPP in caslib CASUSERHDFS(mihend) has 4667 observations and 3 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.21 seconds
+      cpu time            0.01 seconds
+```
+
+```sas
+/* spread the work over all threads */
+%LET threads = 370;
+%LET fbsize = 1000000000;
+data mycas.FizzBuzzMPP / single=no;
+	extras = mod(&fbsize,&threads-1); drop extras;
+	part_size = int(&fbsize/(&threads-1)); drop part_size;
+	thread=_threadid_;
+
+	i = (thread - 1) * part_size;
+	s = i + part_size; drop s;
+	if thread = &threads then do;
+		i = &fbsize - extras;
+		s = &fbsize;
+	end;
+	do until(i = s);
+		i+1;
+		result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
+		if missing(result)=0 then output;
+	end;
+run;
+```
+
+```
+NOTE: Running DATA step in Cloud Analytic Services.
+NOTE: The table FizzBuzzMPP in caslib CASUSERHDFS(mihend) has 466666667 observations and 3 variables.
+NOTE: DATA statement used (Total process time):
+      real time           28.08 seconds
+      cpu time            0.42 seconds
+```
+
+![](../images/blog/fizzbuzz/fizzbuzz_cas4.png)
+
 ---
 ## Using SAS Viya CASL coding
 
@@ -220,8 +285,13 @@ proc cas;
 			end;
 		run;";
 	datastep.runcode / code=dscode single='no';
+
+	table.tableDetails / table="FizzBuzzMPP";
+	table.tableDetails / table="FizzBuzzMPP" level="NODE";
 run;
 ```
+
+![](../images/blog/fizzbuzz/fizzbuzz_cas5.png)
 
 ---
 
