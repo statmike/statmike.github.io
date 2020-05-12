@@ -8,7 +8,12 @@ tags: types-of-computing sas sas-viya casl
 
 ## (in progress) A classic programming challenge addressed with SAS, including a highly multi-threaded twist!
 
-Table of Contents
+
+For this post, I address a classic programming challenge with multi-threading. Have you ever heard of FizzBuzz?  Count from 1, and for each integer, evaluate it for divisibility by 3 or 5.  If yes for 3, output 'fizz,' yes for 5, then 'buzz,' both means 'fizzbuzz.'  While this is highly sequential, counting through integers, it is blatantly parallel if you give different processors a different range of integers to evaluate.
+
+When I learn a new programming language, I like to take challenges like this and see how to implement it best.  That means to run, run fast, and need a minimal number of characters to instruct the processing to commence.  With SAS, this is an easy challenge.  With SAS Viya's CAS engine, the parallelization is easy to orchestrate and super fast - think 1 BILLION integers evaluated in less than 30 seconds.  Sound interesting?  Read on!
+
+### Outline
 - [FizzBuzz logic](#fizzbuzz-logic)
 - [FizzBuzz with SAS](#fizzbuzz-with-sas)
 - FizzBuzz with SAS Viya's CAS engine
