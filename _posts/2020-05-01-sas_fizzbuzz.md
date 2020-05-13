@@ -35,6 +35,7 @@ Loop over positive integers
 	if divisble by 3 then fizz
 	if divisible by 5 then buzz
 	if divisible by 3 & 5 then fizzbuzz
+	else print integer
 ```
 
 efficiency
@@ -43,6 +44,7 @@ Loop over positive integers
 	if divisible by 3 then fizz
 		if divisible by 5 then fizzbuzz
 	else if divisible by 5 then buzz
+	else print integer
 ```
 
 ---
@@ -58,8 +60,8 @@ do until(i = 10000);
 		ifc(mod(i,5)=0,'FizzBuzz','Fizz'),
 	/* id divide by 5 then buzz */
 	ifc(mod(i,5)=0,'Buzz',
-	/* else nothing '' */
-	''))
+	/* else i '' */
+	put(i,8.)))
 end;									
 ```
 
@@ -67,8 +69,8 @@ sas version condenced and output
 ```sas
 do until(i = 10000);
 	i+1;
-	result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-	if missing(result)=0 then output;
+	result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+	output;
 end;
 ```
 
@@ -78,17 +80,17 @@ FizzBuzz with SAS
 	data FizzBuzz;
 		do until(i = 10000);
 			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-			if missing(result)=0 then output;
+			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+			output;
 		end;
 	run;
 ```
 
 ```
-NOTE: The data set WORK.FIZZBUZZ has 4667 observations and 2 variables.
+NOTE: The data set WORK.FIZZBUZZ has 10000 observations and 2 variables.
 NOTE: DATA statement used (Total process time):
       real time           0.00 seconds
-      cpu time            0.01 seconds
+      cpu time            0.02 seconds
 ```
 ![](../images/blog/fizzbuzz/fizzbuzz_sas.png)
 
@@ -120,18 +122,18 @@ FizzBuzz with SAS Viya CAS - single thread
 	data mycas.FizzBuzz / single=yes;
 		do until(i = 10000);
 			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-			if missing(result)=0 then output;
+			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+			output;
 		end;
 	run;
 ```
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
-NOTE: The table FizzBuzz in caslib CASUSERHDFS(mihend) has 4667 observations and 2 variables.
+NOTE: The table FizzBuzz in caslib CASUSERHDFS(mihend) has 10000 observations and 2 variables.
 NOTE: DATA statement used (Total process time):
-      real time           0.21 seconds
-      cpu time            0.00 seconds
+      real time           0.23 seconds
+      cpu time            0.01 seconds
 ```
 
 ---
@@ -143,18 +145,18 @@ FizzBuzz with SAS Viya CAS - all threads
 	data mycas.FizzBuzz / single=no;
 		do until(i = 10000);
 			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-			if missing(result)=0 then output;
+			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+			output;
 		end;
 	run;
 ```
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
-NOTE: The table FizzBuzz in caslib CASUSERHDFS(mihend) has 1726790 observations and 2 variables.
+NOTE: The table FizzBuzz in caslib CASUSERHDFS(mihend) has 3700000 observations and 2 variables.
 NOTE: DATA statement used (Total process time):
-      real time           0.32 seconds
-      cpu time            0.00 seconds
+      real time           0.63 seconds
+      cpu time            0.02 seconds
 ```
 
 ![](../images/blog/fizzbuzz/fizzbuzz_cas1.png)
@@ -187,10 +189,18 @@ FizzBuzz on SAS Viya CAS - all threads doing unique work
 		s = i + &fbsize; drop s; /* stop value for i on the thread */
 		do until(i = s);
 			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-			if missing(result)=0 then output;
+			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+			output;
 		end;
 	run;
+```
+
+```
+NOTE: Running DATA step in Cloud Analytic Services.
+NOTE: The table FizzBuzzMPP in caslib CASUSERHDFS(mihend) has 3700000 observations and 3 variables.
+NOTE: DATA statement used (Total process time):
+      real time           0.44 seconds
+      cpu time            0.01 seconds
 ```
 
 ![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
@@ -216,18 +226,18 @@ data mycas.FizzBuzzMPP / single=no;
 	end;
 	do until(i = s);
 		i+1;
-		result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-		if missing(result)=0 then output;
+		result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+		output;
 	end;
 run;
 ```
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
-NOTE: The table FizzBuzzMPP in caslib CASUSERHDFS(mihend) has 4667 observations and 3 variables.
+NOTE: The table FizzBuzzMPP in caslib CASUSERHDFS(mihend) has 10000 observations and 3 variables.
 NOTE: DATA statement used (Total process time):
-      real time           0.21 seconds
-      cpu time            0.01 seconds
+      real time           0.19 seconds
+      cpu time            0.00 seconds
 ```
 
 ```sas
