@@ -40,7 +40,7 @@ Loop over positive integers
     if divisible by 3 then fizz
     if divisible by 5 then buzz
     if divisible by 3 & 5 then fizzbuzz
-    else print integer
+    if not divisible by 3 or 5 then print integer
 ```
 
 **Efficient Logic**
