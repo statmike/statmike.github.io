@@ -9,7 +9,7 @@ tags: types-of-computing sas sas-viya casl
 ## (in progress) A classic programming challenge addressed with SAS, including a highly multi-threaded twist!
 
 
-For this post, I address a classic programming challenge with multi-threading. Have you ever heard of FizzBuzz?  Count from 1, and for each integer, evaluate it for divisibility by 3 or 5.  If yes for 3, output 'fizz,' yes for 5, then 'buzz,' both means 'fizzbuzz.'  While this is highly sequential, counting through integers, it is blatantly parallel if you give different processors a different range of integers to evaluate.
+For this post, I address a classic programming challenge with multi-threading. Have you ever heard of FizzBuzz?  Count from 1, and for each integer, evaluate it for divisibility by 3 or 5.  If yes for 3, output 'fizz,' yes for 5, then 'buzz,' both means 'fizzbuzz.'  While this is highly sequential, counting through integers is blatantly parallel if you give different processors a different range of integers to evaluate.
 
 When I learn a new programming language, I like to take challenges like this and see how to implement it best.  That means to run, run fast, and need a minimal number of characters to instruct the processing to commence.  With SAS, this is an easy challenge.  With SAS Viya's CAS engine, the parallelization is easy to orchestrate and super fast - think 1 BILLION integers evaluated in less than 30 seconds.  Sound interesting?  Read on!
 
@@ -17,32 +17,41 @@ When I learn a new programming language, I like to take challenges like this and
 - [FizzBuzz logic](#fizzbuzz-logic)
 - [FizzBuzz with SAS](#fizzbuzz-with-sas)
 - FizzBuzz with SAS Viya's CAS engine
-	- [Replicating the single-threaded approach of SAS](#replicating-the-single-threaded-approach-of-sas)
-	- [Invoking threads](#invoking-threads)
-	- [Understanding threads](#understanding-threads)
-	- [Putting all threads to work](#putting-all-threads-to-work)
-	- [Orchestrating threads to work together](#orchestrating-threads-to-work-together)
+    - [Replicating the single-threaded approach of SAS](#replicating-the-single-threaded-approach-of-sas)
+    - [Invoking threads](#invoking-threads)
+    - [Understanding threads](#understanding-threads)
+    - [Putting all threads to work](#putting-all-threads-to-work)
+    - [Orchestrating threads to work together](#orchestrating-threads-to-work-together)
 - Bonus Sections
-	- [Using SAS Viya CASL coding](#using-sas-viya-casl-coding)
-	- [Using SAS Viya CASL coding from Python](#using-sas-viya-casl-coding-from-python)
+    - [Using SAS Viya CASL coding](#using-sas-viya-casl-coding)
+    - [Using SAS Viya CASL coding from Python](#using-sas-viya-casl-coding-from-python)
 
 ---
 ## FizzBuzz Logic
 
-general logic
+Before we jump into programming, let's take a look at the logic.  The reason fizzbuzz makes a good interview question is that it is easily stated and showcases a candidate's initial impressions.  I like to think about two approaches when facing a challenge: general logic, efficient logic.  
+
+**General Logic**
+The general approach is to iterate through integers and evaluate each integer for several conditions.  Is it divisible by 3, 5, or both?  There is also an overall else condition where we return the integer itself.  I like the indented list, outlining approach, for writing out logic.
+
 ```
 Loop over positive integers
-	if divisble by 3 then fizz
-	if divisible by 5 then buzz
-	if divisible by 3 & 5 then fizzbuzz
-	else print integer
+    if divisible by 3 then fizz
+    if divisible by 5 then buzz
+    if divisible by 3 & 5 then fizzbuzz
+    else print integer
 ```
 
-efficiency
+**Efficient Logic**
+
+Efficient approaches reduce the number of evaluations to help the code run faster.  In this challenge, we don't need to evaluate for fizzbuzz if the number is not divisible by 3 (or 5).  For this reason, we can make fizzbuzz a nested (else) condition under the check for 3 (or 5).  Since fizzbuzz is evaluated under one of the conditions, 3 in this example, we can evaluate for buzz as a condition (else) to fizz. 
+
+
 ```
 Loop over positive integers
-	if divisible by 3 then fizz
+	if divisible by 3 then
 		if divisible by 5 then fizzbuzz
+		else fizz
 	else if divisible by 5 then buzz
 	else print integer
 ```
