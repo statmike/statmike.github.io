@@ -64,8 +64,8 @@ There are other tips for efficiency on this challenge that are available with a 
 
 Converting from logic to the syntax of the chosen programming language, SAS, in this case, is the most crucial step.  This conversion requires knowing the right functions, operation syntax, and how to direct the processing efficiently. Each programming language offers flexibility to implement logic in many ways.  The correct choices for efficiency are essential.  A description of my choices precedes the SAS data step syntax here.
 
-- **Loop over positive integers** I chose to use a `do until()` loop with the stop condition being the highest value of integer to evaluate.  In each iteration of the loop `i` increments and the looping stops when the incrementing forces `i` past `i =  10000`.
-- **if/then/else** The `ifc()` function has three inputs: the condition, the action to take on true, the action to take on false.  
+- **loop over positive integers** using a `do until()` loop with the stop condition being the highest value of integer to evaluate.  In each iteration of the loop `i` increments and the looping stops when the incrementing forces `i` past `i =  10000`.
+- **if/then/else** with the `ifc()` function has three inputs: the condition, the action to take on true, the action to take on false.  
     - nesting another `ifc()` function with the 'then' action allows the conditional divisibility by 5 to happen after checking for divisibility by 3 to determine 'fizzbuzz' efficiently
 - **evaluate divisibility** with the `mod()` function where a remainder of 0 indicates divisibility of the first input, `i,` by the second input  
 - **output integers** as text using the `put()` function
