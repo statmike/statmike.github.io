@@ -17,7 +17,7 @@ When I learn a new programming language, I like to take challenges like this and
 - [FizzBuzz logic](#fizzbuzz-logic)
 - [FizzBuzz with SAS](#fizzbuzz-with-sas)
 - FizzBuzz with SAS Viya's CAS engine
-    - [Replicating the single-threaded approach of SAS](#replicating-the-single-threaded-approach-of-sas)
+    - [Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime](#replicating-the-single-threaded-approach-of-sas-with-the-sas-viya-multi-threaded-cas-runtime)
     - [Invoking threads](#invoking-threads)
     - [Understanding threads](#understanding-threads)
     - [Putting all threads to work](#putting-all-threads-to-work)
@@ -40,61 +40,75 @@ Loop over positive integers
     if divisible by 3 then fizz
     if divisible by 5 then buzz
     if divisible by 3 & 5 then fizzbuzz
-    if not divisible by 3 or 5 then print integer
+    if not divisible by 3 or 5 then print the integer
 ```
 
 **Efficient Logic**
 
-Efficient approaches reduce the number of evaluations to help the code run faster.  In this challenge, we don't need to evaluate for fizzbuzz if the number is not divisible by 3 (or 5).  For this reason, we can make fizzbuzz a nested (else) condition under the check for 3 (or 5).  Since fizzbuzz is evaluated under one of the conditions, 3 in this example, we can evaluate for buzz as a condition (else) to fizz. 
+Efficient approaches reduce the number of evaluations to help the code run faster.  In this challenge, we don't need to evaluate for fizzbuzz if the number is not divisible by 3 (or 5).  For this reason, we can make fizzbuzz a nested (else) condition under the check for 3 (or 5).  Since fizzbuzz evaluates under one of the conditions, 3 in this example, we can evaluate for fizzbuzz as a condition (else) to fizz. 
 
 
 ```
 Loop over positive integers
-	if divisible by 3 then
-		if divisible by 5 then fizzbuzz
-		else fizz
-	else if divisible by 5 then buzz
-	else print integer
+    if divisible by 3 then
+        if divisible by 5 then fizzbuzz
+        else fizz
+    else if divisible by 5 then buzz
+    else print integer
 ```
+
+There are other tips for efficiency on this challenge that are available with a web search.  Some of these focus on a different type of multi-threading, where different threads do the 'fizz,' 'buzz,' and 'fizzbuzz' evaluation.  Those approaches may be more efficient for low thread count environments, like a personal computer, but are too limited for the approach I take here.
 
 ---
 ## FizzBuzz with SAS
 
-sas version of the logic
+Converting from logic to the syntax of the chosen programming language, SAS, in this case, is the most crucial step.  This conversion requires knowing the right functions, operation syntax, and how to direct the processing efficiently. Each programming language offers flexibility to implement logic in many ways.  The correct choices for efficiency are essential.  A description of my choices precedes the SAS data step syntax here.
+
+- **Loop over positive integers** I chose to use a `do until()` loop with the stop condition being the highest value of integer to evaluate.  In each iteration of the loop `i` increments and the looping stops when the incrementing forces `i` past `i =  10000`.
+- **if/then/else** The `ifc()` function has three inputs: the condition, the action to take on true, the action to take on false.  
+    - nesting another `ifc()` function with the 'then' action allows the conditional divisibility by 5 to happen after checking for divisibility by 3 to determine 'fizzbuzz' efficiently
+- **evaluate divisibility** with the `mod()` function where a remainder of 0 indicates divisibility of the first input, `i,` by the second input  
+- **output integers** as text using the `put()` function
+
 ```sas
 do until(i = 10000);
-	i+1
-	/* if divide by 3 */
-	ifc(mod(i,3)=0,
-		/* else if divide by 5 then fizzbuzz, else fizz */
-		ifc(mod(i,5)=0,'FizzBuzz','Fizz'),
-	/* id divide by 5 then buzz */
-	ifc(mod(i,5)=0,'Buzz',
-	/* else i '' */
-	put(i,8.)))
-end;									
+    i+1
+    /* if divide by 3 */
+    ifc(mod(i,3)=0,
+        /* else if divide by 5 then fizzbuzz, else fizz */
+        ifc(mod(i,5)=0,'FizzBuzz','Fizz'),
+    /* id divide by 5 then buzz */
+    ifc(mod(i,5)=0,'Buzz',
+    /* else i '' */
+    put(i,8.)))
+end;                                    
 ```
+
+Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.
 
 sas version condenced and output
 ```sas
 do until(i = 10000);
-	i+1;
-	result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-	output;
+    i+1;
+    result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+    output;
 end;
 ```
 
-FizzBuzz with SAS
+Execution with the SAS runtime is triggered when the logic above gets blocked with a SAS Data Step.  This step runs the logic and outputs as directed to the specified data set, `FizzBuzz,` that is stored in the `work` library by default.
+
 ```sas
 /* SAS: FizzBuzz with Data Step */
-	data FizzBuzz;
-		do until(i = 10000);
-			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-			output;
-		end;
-	run;
+    data FizzBuzz;
+        do until(i = 10000);
+            i+1;
+            result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+            output;
+        end;
+    run;
 ```
+
+The log from the above code indicates the requested 10000 evaluations created a data set in `WORK.FIZZBUZZ`.  This data set has 10000 rows, one for each integer evaluated, and 2 columns, one for `i` and one for `result.`  A glimpse of this output follows in the screenshot beneath the log.
 
 ```
 NOTE: The data set WORK.FIZZBUZZ has 10000 observations and 2 variables.
@@ -105,7 +119,7 @@ NOTE: DATA statement used (Total process time):
 ![](../images/blog/fizzbuzz/fizzbuzz_sas.png)
 
 ---
-## Replicating the single-threaded approach of SAS
+## Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime
 
 Start a SAS Viya CAS session
 ```sas
