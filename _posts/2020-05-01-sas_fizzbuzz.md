@@ -84,9 +84,8 @@ do until(i = 10000);
 end;                                    
 ```
 
-Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.
+Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.  The inclusion of the `output` statement directs the writing of results to the output destination during each iteration of the `do unitl()` loop.
 
-sas version condenced and output
 ```sas
 do until(i = 10000);
     i+1;
