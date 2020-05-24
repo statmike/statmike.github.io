@@ -120,12 +120,31 @@ NOTE: DATA statement used (Total process time):
 ---
 ## Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime
 
-Start a SAS Viya CAS session
+Running the process above in SAS triggers a sequential execution for each value of `i.`  SAS now has a runtime called Cloud Analytics Services (CAS), which is part of SAS Viya.  To briefly explain this environment before we move on, I am borrowing content from a previous blog post that you can visit for more details: [Bootstrap Resampling At Scale: Part 1 (of 3)]({% post_url 2020-03-03-sgf2020p1 %}#background--setup)
+
+|Slide 3 (Click-to-Play)|
+|:--:| 
+|<img data-gifffer="/images/blog/sgf2020/Slide 3.gif">|
+
+In the animation above (click-to-play), we see the key components of SAS Viya displayed.  
+- The first part is a SAS 9.4 workspace.  This component gives users a working SAS 9 session when they log into a SAS interface, such as SAS Studio.
+- The second part is called CAS, a distributed computing environment made up of multiple servers working together.
+- The CAS controller conducts the orchestration of work within CAS. Instructions are received and distributed to threads assigned to each processor in the CAS environment.
+- The actual computation happens on CAS workers where each machine's processors have an assignment to computing threads. An environment can contain any number of CAS workers.
+
+Using this information about the architecture, we can replicate our SAS approach in CAS, SAS Viya.  If we just submit the code without a change, it automatically runs in SAS 9 as it did previously.  To direct the execution to CAS, we need two things:
+- A SAS Viya CAS session
+- libname definition that points to CAS in-memory space
+
+This code snippet starts a CAS session with alias name `mysess.`  Within the session, the following `libname` has alias name `mycas` that points to the session created with name `mysess.`
+
 ```sas
 /* setup a cas session */
-	cas mysess;
-	libname mycas cas sessref=mysess;
+    cas mysess;
+    libname mycas cas sessref=mysess;
 ```
+
+The following log shows a successful session created on a CAS environment with 27 worker nodes.
 
 ```
 NOTE: The session MYSESS connected successfully to Cloud Analytic Services eecucs05.unx.sas.com using port 5570. The UUID is 
@@ -139,17 +158,22 @@ NOTE: Libref MYCAS was successfully assigned as follows:
       Physical Name: 30195d31-43df-e240-8ba1-f3d67f22bab3
 ```
 
-FizzBuzz with SAS Viya CAS - single thread
+To point the existing SAS data step execution to the CAS workers but still run single-threaded, the only changes needed are:
+- point the output table `FizzBuzz` to the CAS `libname` we called `mycas`
+- add an option to the data step that instructs it to use a single thread for computing with `/ single=yes` 
+
 ```sas
-/* single thread version */
-	data mycas.FizzBuzz / single=yes;
-		do until(i = 10000);
-			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-			output;
-		end;
-	run;
+/* single thread CAS version */
+    data mycas.FizzBuzz / single=yes;
+        do until(i = 10000);
+            i+1;
+            result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+            output;
+        end;
+    run;
 ```
+
+The log results are very similar to the previous execution in SAS, and they contain confirmation that the execution is happening in CAS.
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
