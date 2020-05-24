@@ -67,7 +67,7 @@ Converting from logic to the syntax of the chosen programming language, SAS, in 
 - **loop over positive integers** using a `do until()` loop with the stop condition being the highest value of integer to evaluate.  In each iteration of the loop `i` increments and the looping stops when the incrementing forces `i` past `i =  10000`.
 - **if/then/else** with the `ifc()` function has three inputs: the condition, the action to take on true, the action to take on false.  
     - nesting another `ifc()` function with the 'then' action allows the conditional divisibility by 5 to happen after checking for divisibility by 3 to determine 'fizzbuzz' efficiently
-- **evaluate divisibility** with the `mod()` function where a remainder of 0 indicates divisibility of the first input, `i,` by the second input  
+- **evaluate divisibility** with the `mod()` function where a remainder of 0 indicates divisibility of the first input, `i`, by the second input  
 - **output integers** as text using the `put()` function
 
 ```sas
@@ -84,7 +84,7 @@ do until(i = 10000);
 end;                                    
 ```
 
-Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.  The inclusion of the `output` statement directs the writing of results to the output destination during each iteration of the `do unitl()` loop.
+Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.  The inclusion of the `output` statement directs the writing of results to the output destination during each iteration of the `do until()` loop.
 
 ```sas
 do until(i = 10000);
@@ -94,7 +94,7 @@ do until(i = 10000);
 end;
 ```
 
-Execution with the SAS runtime is triggered when the logic above gets blocked with a SAS Data Step.  This step runs the logic and outputs as directed to the specified data set, `FizzBuzz,` that is stored in the `work` library by default.
+Execution with the SAS runtime is triggered when the logic above gets blocked with a SAS Data Step.  This step runs the logic and outputs as directed to the specified data set, `FizzBuzz`, that is stored in the `work` library by default.
 
 ```sas
 /* SAS: FizzBuzz with Data Step */
@@ -107,7 +107,7 @@ Execution with the SAS runtime is triggered when the logic above gets blocked wi
     run;
 ```
 
-The log from the above code indicates the requested 10000 evaluations created a data set in `WORK.FIZZBUZZ`.  This data set has 10000 rows, one for each integer evaluated, and 2 columns, one for `i` and one for `result.`  A glimpse of this output follows in the screenshot beneath the log.
+The log from the above code indicates the requested 10000 evaluations created a data set in `WORK.FIZZBUZZ`.  This data set has 10000 rows, one for each integer evaluated, and 2 columns, one for `i` and one for `result`.  A glimpse of this output follows in the screenshot beneath the log.
 
 ```
 NOTE: The data set WORK.FIZZBUZZ has 10000 observations and 2 variables.
@@ -120,23 +120,23 @@ NOTE: DATA statement used (Total process time):
 ---
 ## Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime
 
-Running the process above in SAS triggers a sequential execution for each value of `i.`  SAS now has a runtime called Cloud Analytics Services (CAS), which is part of SAS Viya.  To briefly explain this environment before we move on, I am borrowing content from a previous blog post that you can visit for more details: [Bootstrap Resampling At Scale: Part 1 (of 3)]({% post_url 2020-03-03-sgf2020p1 %}#background--setup)
+Running the process above in SAS triggers a sequential execution for each value of `i`.  SAS now has a runtime called Cloud Analytics Services (CAS), which is part of SAS Viya.  To briefly explain this environment before we move on, I am borrowing content from a previous blog post that you can visit for more details: [Bootstrap Resampling At Scale: Part 1 (of 3)]({% post_url 2020-03-03-sgf2020p1 %}#background--setup)
 
-|Slide 3 (Click-to-Play)|
-|:--:| 
-|<img data-gifffer="/images/blog/sgf2020/Slide 3.gif">|
-
-In the animation above (click-to-play), we see the key components of SAS Viya displayed.  
-- The first part is a SAS 9.4 workspace.  This component gives users a working SAS 9 session when they log into a SAS interface, such as SAS Studio.
-- The second part is called CAS, a distributed computing environment made up of multiple servers working together.
-- The CAS controller conducts the orchestration of work within CAS. Instructions are received and distributed to threads assigned to each processor in the CAS environment.
-- The actual computation happens on CAS workers where each machine's processors have an assignment to computing threads. An environment can contain any number of CAS workers.
+>|Slide 3 (Click-to-Play)|
+>|:--:| 
+>|<img data-gifffer="/images/blog/sgf2020/Slide 3.gif">|
+>
+>- In the animation above (click-to-play), we see the key components of SAS Viya displayed.  
+>	- The first part is a SAS 9.4 workspace.  This component gives users a working SAS 9 session when they log into a SAS interface, such as SAS Studio.
+>	- The second part is called CAS, a distributed computing environment made up of multiple servers working together.
+>	- The CAS controller conducts the orchestration of work within CAS. Instructions are received and distributed to threads assigned to each processor in the CAS environment.
+>	- The actual computation happens on CAS workers where each machine's processors have an assignment to computing threads. An environment can contain any number of CAS workers.
 
 Using this information about the architecture, we can replicate our SAS approach in CAS, SAS Viya.  If we just submit the code without a change, it automatically runs in SAS 9 as it did previously.  To direct the execution to CAS, we need two things:
 - A SAS Viya CAS session
 - libname definition that points to CAS in-memory space
 
-This code snippet starts a CAS session with alias name `mysess.`  Within the session, the following `libname` has alias name `mycas` that points to the session created with name `mysess.`
+This code snippet starts a CAS session with alias name `mysess`.  Within the session, the following `libname` has alias name `mycas` that points to the session created with name `mysess`.
 
 ```sas
 /* setup a cas session */
@@ -186,17 +186,22 @@ NOTE: DATA statement used (Total process time):
 ---
 ## Invoking threads
 
-FizzBuzz with SAS Viya CAS - all threads
+Now that we know how to take the multi-threaded environment of CAS and work with a single thread, we can expand the approach to use all the threads.  I unravel and expand this concept in this and the next sections.
+
+First, just changing `/ single=yes` to `/ single=no` tells the data step code to send the instructions to all available computing threads in CAS.  In this case, there is no input dataset, and the data step code creates the output dataset directly from the instructions.  By changing this one part of the code, it sends the instructions, the same instructions, to each of the threads, which have an assignment to processing cores across all CAS workers.
+
 ```sas
 /* many thread version */
-	data mycas.FizzBuzz / single=no;
-		do until(i = 10000);
-			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-			output;
-		end;
-	run;
+    data mycas.FizzBuzz / single=no;
+        do until(i = 10000);
+            i+1;
+            result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+            output;
+        end;
+    run;
 ```
+
+The log looks very similar, and the run time is even barely shifted.  The difference is that there are now 370,000 output observations instead of the 10,000 expected.  This CAS environment has 27 workers that combine for 370 threads.  Each thread executed the same evaluation of `i = 10000` separately, so 370 separate but the same values, all in parallel.  While this is not the end goal, it is impressive that such a small code change can trigger massive parallelism in code. 
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
@@ -206,41 +211,58 @@ NOTE: DATA statement used (Total process time):
       cpu time            0.02 seconds
 ```
 
+The output in `mycas.FizzBuzz`, filtered to a single value of `i`, `i=15` for example, show that there are many evaluations of this single value, 370 to be exact.  
+
 ![](../images/blog/fizzbuzz/fizzbuzz_cas1.png)
 
 ---
 ## Understanding threads
 
-How many computing threads are available to SAS Viya CAS in this environment?
+The goal is to harness all the computing threads to simultaneously work on a range of values for `i` to evaluate the range faster ultimately.  First, it is essential to understand how to see and use the environment information.
+
+During execution, the data step executing within CAS has access to system variables with key information like the id of the thread, `_threadid_`, and the name of the machine containing the computing core it is allocated to, `_hostname_`.  The following data step uses the `/ single=no` execution option to send instructions to all threads and then instructs each to return the machine name and thread name of each thread. 
+
 ```sas
 /* how many threads? hosts? */
-	data mycas.seethreads / single=no;
-		host=_hostname_;
-		thread=_threadid_;
-		put host thread;
-	run;
+    data mycas.seethreads / single=no;
+        host=_hostname_;
+        thread=_threadid_;
+        put host thread;
+    run;
 ```
+
+The screen below shows that threads 1-12 are on a single host, then threads 13-24 are on yet another host.  It goes on for all 23 hosts in this CAS environment.  Some of the hosts even have different numbers of threads in this environment.  With this information, it is possible to start thinking of ways to alter the instructions on each thread to have it evaluate a different range of values for `i`.
 
 ![](../images/blog/fizzbuzz/fizzbuzz_cas2.png)
 
 ---
 ## Putting all threads to work
 
+In this section,  the `_threadid_`, is used to manipulate the range of `i` that each thread evaluates.  Here is a review of the changes to the code here:
+- store the size of `i` in a macro variable `fbsize` so it is easy to reuse multiple times in the code
+- capture the `_threadid_` in a variable named thread
+    - note that the CAS environment assigns sequential integers as the id values for threads
+- initialize the value of `i` on each thread to be the value of `_threadid_` minus 1
+    - making `i=0` the initial value of the first thread, and so on
+- create a stopping, last value, of `i` for each thread called `s` that is `fbsize=10000` higher than the starting value stored in `i`
+
 FizzBuzz on SAS Viya CAS - all threads doing unique work
 ```sas
 /* do work on each thread in cas */
-	%LET fbsize = 10000;
-	data mycas.FizzBuzzMPP / single=no;
-		thread=_threadid_;
-		i = (thread - 1) * &fbsize; /* start value for i on the thread */
-		s = i + &fbsize; drop s; /* stop value for i on the thread */
-		do until(i = s);
-			i+1;
-			result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-			output;
-		end;
-	run;
+    %LET fbsize = 10000;
+    data mycas.FizzBuzzMPP / single=no;
+        thread=_threadid_;
+        i = (thread - 1) * &fbsize; /* start value for i on the thread */
+        s = i + &fbsize; drop s; /* stop value for i on the thread */
+        do until(i = s);
+            i+1;
+            result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+            output;
+        end;
+    run;
 ```
+
+The log reveals that there are still 370 times more evaluations than the single-threaded approach, but now there should be 370,000 unique values of `i`.
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
@@ -249,6 +271,8 @@ NOTE: DATA statement used (Total process time):
       real time           0.44 seconds
       cpu time            0.01 seconds
 ```
+
+The view of the resulting `mycas.FizzBuzz` data set found below is filtered to view just the 14th value of `i` evaluated on each thread.  It is clear that each thread evaluates a different range of values for `i`.  With a little bit of integer math, the data step evaluates 370,000 `i` values rather than the single-threaded approach with 10,000 and achieves a runtime that is nowhere near 370 times longer. Parallelism with just 4 more code statements, of which two are not required!
 
 ![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
 
