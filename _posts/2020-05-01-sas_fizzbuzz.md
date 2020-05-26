@@ -6,28 +6,30 @@ featured_image: '/images/blog/fizzbuzz/fizzbuzz_cas4.png'
 tags: types-of-computing sas sas-viya casl
 ---
 
-## (in progress) A classic programming challenge addressed with SAS, including a highly multi-threaded twist!
-
-
 For this post, I address a classic programming challenge with multi-threading. Have you ever heard of FizzBuzz?  Count from 1, and for each integer, evaluate it for divisibility by 3 or 5.  If yes for 3, output 'fizz,' yes for 5, then 'buzz,' both means 'fizzbuzz.'  While this is highly sequential, counting through integers is blatantly parallel if you give different processors a different range of integers to evaluate.
 
 When I learn a new programming language, I like to take challenges like this and see how to implement it best.  That means to run, run fast, and need a minimal number of characters to instruct the processing to commence.  With SAS, this is an easy challenge.  With SAS Viya's CAS engine, the parallelization is easy to orchestrate and super fast - think 1 BILLION integers evaluated in less than 30 seconds.  Sound interesting?  Read on!
 
 ### Outline
-- [FizzBuzz logic](#fizzbuzz-logic)
 - [FizzBuzz with SAS](#fizzbuzz-with-sas)
-- FizzBuzz with SAS Viya's CAS engine
+    - [FizzBuzz logic](#fizzbuzz-logic)
+    - [FizzBuzz with SAS](#fizzbuzz-with-sas)
+- [FizzBuzz with SAS Viya's CAS engine](#fizzbuzz-with-sas-viyas-cas-engine)
     - [Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime](#replicating-the-single-threaded-approach-of-sas-with-the-sas-viya-multi-threaded-cas-runtime)
     - [Invoking threads](#invoking-threads)
     - [Understanding threads](#understanding-threads)
     - [Putting all threads to work](#putting-all-threads-to-work)
     - [Orchestrating threads to work together](#orchestrating-threads-to-work-together)
-- Bonus Sections
+- [Bonus Sections](#bonus-sections)
     - [Using SAS Viya CASL coding](#using-sas-viya-casl-coding)
     - [Using SAS Viya CASL coding from Python](#using-sas-viya-casl-coding-from-python)
 
 ---
-## FizzBuzz Logic
+
+## FizzBuzz with SAS
+
+---
+### FizzBuzz Logic
 
 Before we jump into programming, let's take a look at the logic.  The reason fizzbuzz makes a good interview question is that it is easily stated and showcases a candidate's initial impressions.  I like to think about two approaches when facing a challenge: general logic, efficient logic.  
 
@@ -60,7 +62,7 @@ Loop over positive integers
 There are other tips for efficiency on this challenge that are available with a web search.  Some of these focus on a different type of multi-threading, where different threads do the 'fizz,' 'buzz,' and 'fizzbuzz' evaluation.  Those approaches may be more efficient for low thread count environments, like a personal computer, but are too limited for the approach I take here.
 
 ---
-## FizzBuzz with SAS
+### FizzBuzz with SAS
 
 Converting from logic to the syntax of the chosen programming language, SAS, in this case, is the most crucial step.  This conversion requires knowing the right functions, operation syntax, and how to direct the processing efficiently. Each programming language offers flexibility to implement logic in many ways.  The correct choices for efficiency are essential.  A description of my choices precedes the SAS data step syntax here.
 
@@ -118,7 +120,12 @@ NOTE: DATA statement used (Total process time):
 ![](../images/blog/fizzbuzz/fizzbuzz_sas.png)
 
 ---
-## Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime
+
+## FizzBuzz with SAS Viya's CAS engine
+
+---
+
+### Replicating the single-threaded approach of SAS with the SAS Viya multi-threaded CAS runtime
 
 Running the process above in SAS triggers a sequential execution for each value of `i`.  SAS now has a runtime called Cloud Analytics Services (CAS), which is part of SAS Viya.  To briefly explain this environment before we move on, I am borrowing content from a previous blog post that you can visit for more details: [Bootstrap Resampling At Scale: Part 1 (of 3)]({% post_url 2020-03-03-sgf2020p1 %}#background--setup)
 
@@ -184,7 +191,7 @@ NOTE: DATA statement used (Total process time):
 ```
 
 ---
-## Invoking threads
+### Invoking threads
 
 Now that we know how to take the multi-threaded environment of CAS and work with a single thread, we can expand the approach to use all the threads.  I unravel and expand this concept in this and the next sections.
 
@@ -216,7 +223,7 @@ The output in `mycas.FizzBuzz`, filtered to a single value of `i`, `i=15` for ex
 ![](../images/blog/fizzbuzz/fizzbuzz_cas1.png)
 
 ---
-## Understanding threads
+### Understanding threads
 
 The goal is to harness all the computing threads to simultaneously work on a range of values for `i` to evaluate the range faster ultimately.  First, it is essential to understand how to see and use the environment information.
 
@@ -236,7 +243,7 @@ The screen below shows that threads 1-12 are on a single host, then threads 13-2
 ![](../images/blog/fizzbuzz/fizzbuzz_cas2.png)
 
 ---
-## Putting all threads to work
+### Putting all threads to work
 
 In this section,  the `_threadid_`, is used to manipulate the range of `i` that each thread evaluates.  Here is a review of the changes to the code here:
 - store the size of `i` in a macro variable `fbsize` so it is easy to reuse multiple times in the code
@@ -277,7 +284,7 @@ The view of the resulting `mycas.FizzBuzz` data set found below is filtered to s
 ![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
 
 ---
-## Orchestrating threads to work together
+### Orchestrating threads to work together
 This next extension of the code uses more integer arithmetic to spread the range of `i` evenly across all the threads rather than just asking each thread to work on a fixed range.  Remember that a thread in CAS is dedicated to a computing core, so this is an optimal division of work and not just creating separate processes and letting an operating system manage contention for resources.  By knowing the number of threads, it is possible to evenly partition the effort for each work unit, a thread.  If the range of `i` is not evenly divisible by the number of threads, this method adds any extras to the last thread.  The new features in this version of the FizzBuzz code summarized and followed by the code:
 
 - store the range for each thread in `part_size`, the value of `i` divided by the number of threads
@@ -365,7 +372,7 @@ This code meets the goals of speed in computation and speed of coding, with only
 
 ---
 
-## Using SAS Viya CASL coding
+### Using SAS Viya CASL coding
 
 FizzBuzz on SAS Viya CAS with CASL code from PROC CAS
 ```sas
@@ -404,7 +411,7 @@ End SAS Viya CAS session
 ```
 
 ---
-## Using SAS Viya CASL coding from Python
+### Using SAS Viya CASL coding from Python
 
 Running from Python Via SWAT
 ```python
