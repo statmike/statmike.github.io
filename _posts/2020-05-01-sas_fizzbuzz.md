@@ -127,10 +127,10 @@ Running the process above in SAS triggers a sequential execution for each value 
 >|<img data-gifffer="/images/blog/sgf2020/Slide 3.gif">|
 >
 >- In the animation above (click-to-play), we see the key components of SAS Viya displayed.  
->	- The first part is a SAS 9.4 workspace.  This component gives users a working SAS 9 session when they log into a SAS interface, such as SAS Studio.
->	- The second part is called CAS, a distributed computing environment made up of multiple servers working together.
->	- The CAS controller conducts the orchestration of work within CAS. Instructions are received and distributed to threads assigned to each processor in the CAS environment.
->	- The actual computation happens on CAS workers where each machine's processors have an assignment to computing threads. An environment can contain any number of CAS workers.
+>   - The first part is a SAS 9.4 workspace.  This component gives users a working SAS 9 session when they log into a SAS interface, such as SAS Studio.
+>   - The second part is called CAS, a distributed computing environment made up of multiple servers working together.
+>   - The CAS controller conducts the orchestration of work within CAS. Instructions are received and distributed to threads assigned to each processor in the CAS environment.
+>   - The actual computation happens on CAS workers where each machine's processors have an assignment to computing threads. An environment can contain any number of CAS workers.
 
 Using this information about the architecture, we can replicate our SAS approach in CAS, SAS Viya.  If we just submit the code without a change, it automatically runs in SAS 9 as it did previously.  To direct the execution to CAS, we need two things:
 - A SAS Viya CAS session
@@ -242,7 +242,7 @@ In this section,  the `_threadid_`, is used to manipulate the range of `i` that 
 - store the size of `i` in a macro variable `fbsize` so it is easy to reuse multiple times in the code
 - capture the `_threadid_` in a variable named thread
     - note that the CAS environment assigns sequential integers as the id values for threads
-- initialize the value of `i` on each thread to be the value of `_threadid_` minus 1
+- initialize the value of `i` on each thread to be the value of `_threadid_` minus 1 then multiple by `fbsize`, the number of `i` evalution to do on the thread
     - making `i=0` the initial value of the first thread, and so on
 - create a stopping, last value, of `i` for each thread called `s` that is `fbsize=10000` higher than the starting value stored in `i`
 
@@ -272,67 +272,72 @@ NOTE: DATA statement used (Total process time):
       cpu time            0.01 seconds
 ```
 
-The view of the resulting `mycas.FizzBuzz` data set found below is filtered to view just the 14th value of `i` evaluated on each thread.  It is clear that each thread evaluates a different range of values for `i`.  With a little bit of integer math, the data step evaluates 370,000 `i` values rather than the single-threaded approach with 10,000 and achieves a runtime that is nowhere near 370 times longer. Parallelism with just 4 more code statements, of which two are not required!
+The view of the resulting `mycas.FizzBuzz` data set found below is filtered to see just the 14th value of `i` evaluated on each thread.  It is clear that each thread evaluates a different range of values for `i`.  With a little bit of integer math, the data step evaluates 370,000 `i` values rather than the single-threaded approach with 10,000 and achieves a runtime that is nowhere near 370 times longer. Parallelism with just 4 more code statements, of which two are not required!
 
 ![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
 
 ---
 ## Orchestrating threads to work together
+This next extension of the code uses more integer arithmetic to spread the range of `i` evenly across all the threads rather than just asking each thread to work on a fixed range.  Remember that a thread in CAS is dedicated to a computing core, so this is an optimal division of work and not just creating separate processes and letting an operating system manage contention for resources.  By knowing the number of threads, it is possible to evenly partition the effort for each work unit, a thread.  If the range of `i` is not evenly divisible by the number of threads, this method adds any extras to the last thread.  The new features in this version of the FizzBuzz code summarized and followed by the code:
 
-FizzBuzz on SAS Viya CAS - all threads doing unique work
+- store the range for each thread in `part_size`, the value of `i` divided by the number of threads
+- make the starting value of `i`
+    - calculate the number of evaluations on lower number threads with `(thead-1) * part_size`
+- create the stopping value of `i` for the thread
+    - add `part_size` to `i`
+    - if it is the last thread, `thread = &threads`, then set the stopping value to `&fbsize` so it includes any remainder from the `part_size` division
+
 ```sas
 /* spread the work over all threads */
 %LET threads = 370;
 %LET fbsize = 10000;
 data mycas.FizzBuzzMPP / single=no;
-	extras = mod(&fbsize,&threads-1); drop extras;
-	part_size = int(&fbsize/(&threads-1)); drop part_size;
-	thread=_threadid_;
+    part_size = int(&fbsize/(&threads)); drop part_size;
+    thread=_threadid_;
 
-	i = (thread - 1) * part_size;
-	s = i + part_size; drop s;
-	if thread = &threads then do;
-		i = &fbsize - extras;
-		s = &fbsize;
-	end;
-	do until(i = s);
-		i+1;
-		result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
-		output;
-	end;
+    i = (thread - 1) * part_size;
+    s = i + part_size; drop s;
+    if thread = &threads then s = &fbsize;
+    do until(i = s);
+        i+1;
+        result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+        output;
+    end;
 run;
 ```
+
+The log shows that the requested 10,000 iterations resulted in a dataset with only 10,000 observations as expected.  This small computation divided over 370 dedicated threads barely even registers a CPU time.  In the next step, a much larger `fbsize` is considered.
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
 NOTE: The table FizzBuzzMPP in caslib CASUSERHDFS(mihend) has 10000 observations and 3 variables.
 NOTE: DATA statement used (Total process time):
-      real time           0.19 seconds
-      cpu time            0.00 seconds
+      real time           0.20 seconds
+      cpu time            0.01 seconds
 ```
+
+The code is rerun with `fbsize = 1000000000` to see how long 1 billion integers take to evaluate on 370 dedicated threads.  The code gets slightly altered to only output rows that match `Fizz` or `Buzz`.  
 
 ```sas
 /* spread the work over all threads */
 %LET threads = 370;
 %LET fbsize = 1000000000;
 data mycas.FizzBuzzMPP / single=no;
-	extras = mod(&fbsize,&threads-1); drop extras;
-	part_size = int(&fbsize/(&threads-1)); drop part_size;
-	thread=_threadid_;
+    part_size = int(&fbsize/(&threads)); drop part_size;
+    thread=_threadid_;
 
-	i = (thread - 1) * part_size;
-	s = i + part_size; drop s;
-	if thread = &threads then do;
-		i = &fbsize - extras;
-		s = &fbsize;
-	end;
-	do until(i = s);
-		i+1;
-		result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-		if missing(result)=0 then output;
-	end;
+    i = (thread - 1) * part_size;
+    s = i + part_size; drop s;
+    if thread = &threads then s = &fbsize;
+    do until(i = s);
+        i+1;
+        result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
+        if missing(result)=0 then output;
+    end;
 run;
 ```
+
+The resulting 466,666,667 integers that are either `Fizz` or `Buzz` all correctly evaluate and write to dataset `FizzBuzzMPP` in only 28.08 seconds.  Impressive! 
 
 ```
 NOTE: Running DATA step in Cloud Analytic Services.
@@ -342,38 +347,49 @@ NOTE: DATA statement used (Total process time):
       cpu time            0.42 seconds
 ```
 
+Take a look at the last integers on the way up to 1 billion and the evaluated results below.  In under 30 seconds, this code: 
+iterated over each integer
+- evaluates for `Fizz`
+- evaluates for `Buzz`
+- evaluates for `FizzBuzz`
+- evaluates to see if any matches occurred, 
+- outputs and writes the results to the file `FizzBuzzMPP`
+
+This code meets the goals of speed in computation and speed of coding, with only 14 lines of code, of which some can be considered optional.  Wow!
+
 ![](../images/blog/fizzbuzz/fizzbuzz_cas4.png)
 
 ---
+
+## Bonus Sections
+
+---
+
 ## Using SAS Viya CASL coding
 
 FizzBuzz on SAS Viya CAS with CASL code from PROC CAS
 ```sas
 %LET threads = 370;
-%LET fbsize=10000;
+%LET fbsize=1000000000;
 proc cas;
-	dscode="
-		data FizzBuzzMPP;
-			extras = mod(&fbsize,&threads-1); drop extras;
-			part_size = int(&fbsize/(&threads-1)); drop part_size;
-			thread=_threadid_;
+    dscode="
+        data FizzBuzzMPP;
+            part_size = int(&fbsize/(&threads)); drop part_size;
+            thread=_threadid_;
 
-			i = (thread - 1) * part_size;
-			s = i + part_size; drop s;
-			if thread = &threads then do;
-				i = &fbsize - extras;
-				s = &fbsize;
-			end;
-			do until(i = s);
-				i+1;
-				result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
-				if missing(result)=0 then output;
-			end;
-		run;";
-	datastep.runcode / code=dscode single='no';
+            i = (thread - 1) * part_size;
+            s = i + part_size; drop s;
+            if thread = &threads then s = &fbsize;
+            do until(i = s);
+                i+1;
+                result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz','')));
+                if missing(result)=0 then output;
+            end;
+        run;";
+    datastep.runcode / code=dscode single='no';
 
-	table.tableDetails / table="FizzBuzzMPP";
-	table.tableDetails / table="FizzBuzzMPP" level="NODE";
+    table.tableDetails / table="FizzBuzzMPP";
+    table.tableDetails / table="FizzBuzzMPP" level="NODE";
 run;
 ```
 
@@ -384,7 +400,7 @@ run;
 End SAS Viya CAS session
 ```sas
 /* end the cas session */
-	cas mysess clear;
+    cas mysess clear;
 ```
 
 ---
