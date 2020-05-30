@@ -27,6 +27,7 @@ When I learn a new programming language, I like to take challenges like this and
 ---
 
 ## FizzBuzz with SAS
+A quick review of the FizzBuzz challenge, the logic, and implementation with SAS.
 
 ---
 ### FizzBuzz Logic
@@ -86,7 +87,7 @@ do until(i = 10000);
 end;                                    
 ```
 
-Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.  The inclusion of the `output` statement directs the writing of results to the output destination during each iteration of the `do until()` loop.
+Condensing the logic above into single rows for each step yields a step-by-step logic flow in the SAS syntax.  The conditional logic step gets wrapped in the `strip()` function to remove leading and trailing blanks that may occur due to different lengths of output.  The inclusion of the `output` statement directs results to the output destination for iterations of the `do until()` loop.
 
 ```sas
 do until(i = 10000);
@@ -122,6 +123,7 @@ NOTE: DATA statement used (Total process time):
 ---
 
 ## FizzBuzz with SAS Viya's CAS engine
+Expanding the SAS implementation to use SAS Viya's CAS engine for easy multi-threaded computing.
 
 ---
 
@@ -225,7 +227,7 @@ The output in `mycas.FizzBuzz`, filtered to a single value of `i`, `i=15` for ex
 ---
 ### Understanding threads
 
-The goal is to harness all the computing threads to simultaneously work on a range of values for `i` to evaluate the range faster ultimately.  First, it is essential to understand how to see and use the environment information.
+The goal is to harness all the computing threads to simultaneously work on a range of values for `i` to evaluate the range faster ultimately.  First, it is essential to understand how to see and use environment information.
 
 During execution, the data step executing within CAS has access to system variables with key information like the id of the thread, `_threadid_`, and the name of the machine containing the computing core it is allocated to, `_hostname_`.  The following data step uses the `/ single=no` execution option to send instructions to all threads and then instructs each to return the machine name and thread name of each thread. 
 
@@ -249,7 +251,7 @@ In this section,  the `_threadid_`, is used to manipulate the range of `i` that 
 - store the size of `i` in a macro variable `fbsize` so it is easy to reuse multiple times in the code
 - capture the `_threadid_` in a variable named thread
     - note that the CAS environment assigns sequential integers as the id values for threads
-- initialize the value of `i` on each thread to be the value of `_threadid_` minus 1 then multiple by `fbsize`, the number of `i` evalution to do on the thread
+- initialize the value of `i` on each thread to be the value of `_threadid_` minus 1 then multiple by `fbsize`, the number of `i` evaluation to do on the thread
     - making `i=0` the initial value of the first thread, and so on
 - create a stopping, last value, of `i` for each thread called `s` that is `fbsize=10000` higher than the starting value stored in `i`
 
@@ -279,20 +281,20 @@ NOTE: DATA statement used (Total process time):
       cpu time            0.01 seconds
 ```
 
-The view of the resulting `mycas.FizzBuzz` data set found below is filtered to see just the 14th value of `i` evaluated on each thread.  It is clear that each thread evaluates a different range of values for `i`.  With a little bit of integer math, the data step evaluates 370,000 `i` values rather than the single-threaded approach with 10,000 and achieves a runtime that is nowhere near 370 times longer. Parallelism with just 4 more code statements, of which two are not required!
+The view of the resulting `mycas.FizzBuzz` data set found below is filtered to see just the 14th value of `i` evaluated on each thread.  It is clear that each thread evaluates a different range of values for `i`.  With a little bit of integer math, the data step evaluates 370,000 `i` values rather than the single-threaded approach with 10,000 and achieves a runtime that is nowhere near 370 times longer. Parallelism with just 4 more code statements, of which two are optional!
 
 ![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
 
 ---
 ### Orchestrating threads to work together
-This next extension of the code uses more integer arithmetic to spread the range of `i` evenly across all the threads rather than just asking each thread to work on a fixed range.  Remember that a thread in CAS is dedicated to a computing core, so this is an optimal division of work and not just creating separate processes and letting an operating system manage contention for resources.  By knowing the number of threads, it is possible to evenly partition the effort for each work unit, a thread.  If the range of `i` is not evenly divisible by the number of threads, this method adds any extras to the last thread.  The new features in this version of the FizzBuzz code summarized and followed by the code:
+This next extension of the code uses more integer arithmetic to spread the range of `i` evenly across all the threads rather than just asking each thread to work on a fixed range.  Remember that a thread in CAS allocates to a computing core, so this is an optimal division of work and not just creating separate processes and letting an operating system manage contention for resources.  By knowing the number of threads, it is possible to evenly partition the effort for each work unit, a thread.  If the range of `i` is not evenly divisible by the number of threads, this method adds any extras to the last thread.  The new features in this version of the FizzBuzz code summarized and followed by the code:
 
 - store the range for each thread in `part_size`, the value of `i` divided by the number of threads
 - make the starting value of `i`
     - calculate the number of evaluations on lower number threads with `(thead-1) * part_size`
 - create the stopping value of `i` for the thread
     - add `part_size` to `i`
-    - if it is the last thread, `thread = &threads`, then set the stopping value to `&fbsize` so it includes any remainder from the `part_size` division
+    - if it is the last thread, `thread = &threads`, set the stopping value to `&fbsize` to ensure inclusion of any remainder from the `part_size` division
 
 ```sas
 /* spread the work over all threads */
@@ -369,12 +371,27 @@ This code meets the goals of speed in computation and speed of coding, with only
 ---
 
 ## Bonus Sections
+Adapting the SAS data step code to the SAS CASL language for directly computing in CAS and then using CASL from Python with the SWAT API. That is many acronyms!
 
 ---
 
 ### Using SAS Viya CASL coding
 
-FizzBuzz on SAS Viya CAS with CASL code from PROC CAS
+When the data step above points to `libname mycas` SAS knows to direct computations to the CAS environment.  Another way to do this is by using the SAS CASL language within PROC CAS.  Think of PROC CAS as a gateway directly into CAS where you write code that is directly computed by the CAS controller on the CAS workers.  An open CAS session is still required.
+
+The CASL language does not have SAS macro variable facility.  Instead, it can directly declare variables and use them - more on that in the [next section](#using-sas-viya-casl-coding-from-python).  Since we are coming from a SAS session, PROC CAS resolves macro variables in the PROC CAS code.  To extend the example above the following changes are made:
+- wrap the data step in PROC CAS
+- store the text of the data step in a variable, `dscode` in this example
+    - remove the libname reference, `mycas` as this is directly computing against CAS and does not need the pointer to see the data set like SAS does
+    - remove the `/ single = no` as it is placed in a different place
+- declare the action `datastep.runcode` and specify options:
+    - point the `code` option to the stored data step code in `dscode`
+    - give option `single` a value of `no`
+
+Getting information about the resulting `FizzBuzzMPP` table requires a few more action steps:
+- action `table.tableDetails` is used on the table `FizzBuzzMPP` to view information about the data set in the CAS environment
+- using the action `table.tableDetails` with `level="NODE"`, further breaks down the information about `FizzBuzzMPP` by the worker machine, called a node, in the CAS environment
+
 ```sas
 %LET threads = 370;
 %LET fbsize=1000000000;
@@ -400,20 +417,63 @@ proc cas;
 run;
 ```
 
+The output below returns from the two `table.tableDetails` actions calls.  The first result table shows that all 466,666,667 rows of output are stored and gives some information about how it is stored.  The second results table breaks the information down by node, which is a view of how the rows get partitioned to the different worker machines.  Each machine does not have an equal number of rows in this case, which is likely explained by the machines having differing cores.  
+
+**Additional introduction to CAS tables information:**
+>For very small tables, not every machine or every thread may get data allocated to it.  If there is a by-variable, then all rows associated with a by level are on the same thread, therefore the same machine.  If the number of by-levels is less than the number of threads, then some threads do not have rows allocated.  When the number of by-levels exceeds the number of threads, then each thread can have multiple by-levels in its partition of rows in a way that creates balance across the environment.
+
 ![](../images/blog/fizzbuzz/fizzbuzz_cas5.png)
 
 ---
 
-End SAS Viya CAS session
+In the next section, this CASL code is modified for use from Python.  Before exiting SAS, it is good to remember any active CAS session and issue a termination.  The following short snippet stops the session and clears any CAS tables that are in the scope of the session.
+
 ```sas
 /* end the cas session */
     cas mysess clear;
 ```
 
+**Additional introduction to CAS tables information:**
+> Tables exist in a caslib, like `mycas` in these examples.  Each caslib has a scope.  These examples use a caslib to the CAS session which results in session scope.  The tables vanish when the session ends.  Another type of scope exists called global.  A globally scoped caslib gives one or more users access to tables across any session. For instance, the automatic caslib `CASUSER` is global and can only be accessed by a specific user. The global scope allows a user, or process, to persist a table between sessions without recreating or reloading it in later sessions.  Similarly, a group of users can share tables with a globally scoped caslib.  
+
 ---
 ### Using SAS Viya CASL coding from Python
 
 Running from Python Via SWAT
+
 ```python
 import swat
+mysess=swat.CAS('localhost',8777,'sasdemo','sasdemo',protocol='http')
+
+mysess.dataStep.runCode(code='''data _null_;  put _hostname_ _threadid_ _nthreads_; run;''', single='no')
+
+threads = 8
+fbsize = 1000
+```
+
+```python
+dscode='''data FizzBuzzMPP;
+            part_size = int(''' + str(fbsize) + '''/(''' + str(threads) + ''')); drop part_size; 
+            thread=_threadid_; 
+            i = (thread - 1) * part_size;
+            s = i + part_size; drop s;
+            if thread =''' + str(threads) + '''then s = ''' + str(fbsize) + ''';
+            do until(i = s);
+                i+1;
+                result = strip(ifc(mod(i,3)=0,ifc(mod(i,5)=0,'FizzBuzz','Fizz'),ifc(mod(i,5)=0,'Buzz',put(i,8.))));
+                if missing(result)=0 then output;
+            end;
+        run;'''
+
+mysess.datastep.runcode(code=dscode, single='no')
+
+mysess.table.tabledetails(table="FizzBuzzMPP")
+```
+
+```python
+mysess.table.fetch(Table="FizzBuzzMPP",to=15)
+
+fb=mysess.CASTable("FizzBuzzMPP")
+print(fb.head(15))
+print(fb.groupby('thread').head(5))
 ```
