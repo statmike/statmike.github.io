@@ -1,0 +1,6 @@
+goal is to remove projects site and put content in blog
+
+moved 2019-07-15-rbm.md from _projects to _blog
+removed projects for _data/settings.yaml
+
+the main index.html still reference projects so they can appear on main page but there are no projects so the code does not impact the look of the homepage

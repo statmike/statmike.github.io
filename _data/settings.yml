@@ -8,9 +8,7 @@ header_settings:
 
 menu_settings:
   menu_items:
-    - title: 'Projects'
-      url: '/'
-    - title: 'The Analytics Blog'
+    - title: 'Inference Blog'
       url: '/blog/'
     - title: 'Repositories'
       url: '/repos'
