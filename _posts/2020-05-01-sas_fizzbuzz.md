@@ -118,7 +118,7 @@ NOTE: DATA statement used (Total process time):
       real time           0.00 seconds
       cpu time            0.02 seconds
 ```
-![](../images/blog/fizzbuzz/fizzbuzz_sas.png)
+>![](../images/blog/fizzbuzz/fizzbuzz_sas.png)
 
 ---
 
@@ -222,7 +222,7 @@ NOTE: DATA statement used (Total process time):
 
 The output in `mycas.FizzBuzz`, filtered to a single value of `i`, `i=15` for example, show that there are many evaluations of this single value, 370 to be exact.  
 
-![](../images/blog/fizzbuzz/fizzbuzz_cas1.png)
+>![](../images/blog/fizzbuzz/fizzbuzz_cas1.png)
 
 ---
 ### Understanding threads
@@ -242,7 +242,7 @@ During execution, the data step executing within CAS has access to system variab
 
 The screen below shows that threads 1-12 are on a single host, then threads 13-24 are on yet another host.  It goes on for all 23 hosts in this CAS environment.  Some of the hosts even have different numbers of threads in this environment.  With this information, it is possible to start thinking of ways to alter the instructions on each thread to have it evaluate a different range of values for `i`.
 
-![](../images/blog/fizzbuzz/fizzbuzz_cas2.png)
+>![](../images/blog/fizzbuzz/fizzbuzz_cas2.png)
 
 ---
 ### Putting all threads to work
@@ -283,7 +283,7 @@ NOTE: DATA statement used (Total process time):
 
 The view of the resulting `mycas.FizzBuzz` data set found below is filtered to see just the 14th value of `i` evaluated on each thread.  It is clear that each thread evaluates a different range of values for `i`.  With a little bit of integer math, the data step evaluates 370,000 `i` values rather than the single-threaded approach with 10,000 and achieves a runtime that is nowhere near 370 times longer. Parallelism with just 4 more code statements, of which two are optional!
 
-![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
+>![](../images/blog/fizzbuzz/fizzbuzz_cas3.png)
 
 ---
 ### Orchestrating threads to work together
@@ -366,7 +366,7 @@ iterated over each integer
 
 This code meets the goals of speed in computation and speed of coding, with only 14 lines of code, of which some can be considered optional.  Wow!
 
-![](../images/blog/fizzbuzz/fizzbuzz_cas4.png)
+>![](../images/blog/fizzbuzz/fizzbuzz_cas4.png)
 
 ---
 
@@ -422,7 +422,7 @@ The output below returns from the two `table.tableDetails` actions calls.  The f
 **Additional introduction to CAS tables information:**
 >For very small tables, not every machine or every thread may get data allocated to it.  If there is a by-variable, then all rows associated with a by level are on the same thread, therefore the same machine.  If the number of by-levels is less than the number of threads, then some threads do not have rows allocated.  When the number of by-levels exceeds the number of threads, then each thread can have multiple by-levels in its partition of rows in a way that creates balance across the environment.
 
-![](../images/blog/fizzbuzz/fizzbuzz_cas5.png)
+>![](../images/blog/fizzbuzz/fizzbuzz_cas5.png)
 
 ---
 
@@ -439,19 +439,45 @@ In the next section, this CASL code is modified for use from Python.  Before exi
 ---
 ### Using SAS Viya CASL coding from Python
 
-Running from Python Via SWAT
+Using SAS today can still mean using a workflow in the language of choice for any project.  Python is a language I find myself using very often. In this section, I take the concepts shown in [Using SAS Viya CASL Coding](#using-sas-viya-casl-coding) and use them directly in Python, specifically Python 3.  Using the [SWAT](https://github.com/sassoftware/python-swat) Python library enables direct communication with the CAS controller.  Let's take the example step-by-step in Python below.
+
+Create a CAS session from Python:
+- import the swat library to enable using CAS from Python
+- create a CAS session
+    - for this example, it is still called `mysess`
+    - in Python, we use assignment, `=` sign, to the `swat.CAS` function with host location and login information
 
 ```python
 import swat
 mysess=swat.CAS('localhost',8777,'sasdemo','sasdemo',protocol='http')
-
-mysess.dataStep.runCode(code='''data _null_;  put _hostname_ _threadid_ _nthreads_; run;''', single='no')
-
-threads = 8
-fbsize = 1000
 ```
 
+Within the `mysess` session, the CAS action is directly called.  In this example, a data step runs to examine the value of the automatic environment variables for viewing the number of available threads.  This example is using a container with constrained resources.
+- run `datastep.runcode` directly in the session with `mysess.datastepruncode` and put the data step code in the `code=` parameter along with the parameter `single='no'`
+
 ```python
+mysess.dataStep.runCode(code='''data _null_;  put _hostname_ _threadid_ _nthreads_; run;''', single='no')
+```
+
+This data step returns the hostname, and thread number for each thread in the CAS environment `mysess` is running in.  In this case, it is a single machine with 8 computing threads.  The information is returned to Python and looks like this:
+
+```
+sas-programming 4 8
+sas-programming 2 8
+sas-programming 8 8
+sas-programming 3 8
+sas-programming 1 8
+sas-programming 7 8
+sas-programming 6 8
+sas-programming 5 8
+```
+
+Knowing the number of threads (8) and the desired number of integers to evaluate (1000) allows us to define these as parameters.  Rather than macro variables, these get directly assigned and used within the assignment of `dscode` that holds the data step code.  
+
+```python
+threads = 8
+fbsize = 1000
+
 dscode='''data FizzBuzzMPP;
             part_size = int(''' + str(fbsize) + '''/(''' + str(threads) + ''')); drop part_size; 
             thread=_threadid_; 
@@ -464,16 +490,59 @@ dscode='''data FizzBuzzMPP;
                 if missing(result)=0 then output;
             end;
         run;'''
-
-mysess.datastep.runcode(code=dscode, single='no')
-
-mysess.table.tabledetails(table="FizzBuzzMPP")
 ```
+
+The code exectution is triggered with the already familiar `datastep.runcode` action from `mysess`:
+
+```python
+mysess.datastep.runcode(code=dscode, single='no')
+```
+
+If you are using a Jupyter notebook, then the output looks like:
+
+>![](../images/blog/fizzbuzz/fizzbuzz_py1.png)
+
+The details of the table can are examined with the `table.tabledetails` action:
+
+>![](../images/blog/fizzbuzz/fizzbuzz_py2.png)
+
+To view the first few rows of the output table the `table.fetch` action is useful, in this case, with `to=15` to output 15 rows.
 
 ```python
 mysess.table.fetch(Table="FizzBuzzMPP",to=15)
+```
 
+>![](../images/blog/fizzbuzz/fizzbuzz_py3.png)
+
+For returning the first 15 rows in Python, instinct is to use the `head()` function in Pandas.  SAS Viya's CAS runtime has Pandas functions overloaded so that the familiar syntax gets used directly, it works multi-threaded, and does not require importing Pandas.  
+- store the table assignment in a variable, `fb` in this case
+- within a Python print function use the `head(15)` request for table `fb`
+
+```python
 fb=mysess.CASTable("FizzBuzzMPP")
 print(fb.head(15))
-print(fb.groupby('thread').head(5))
 ```
+
+>![](../images/blog/fizzbuzz/fizzbuzz_py4.png)
+
+Show the first 2 rows of each thread using the familiar pandas `groupby()` function:
+
+```python
+print(fb.groupby('thread').head(2))
+```
+
+>![](../images/blog/fizzbuzz/fizzbuzz_py5.png)
+
+When done with CAS, close the session:
+
+```python
+mysess.close()
+```
+
+**Additional introduction to CAS coding from Python:**
+>Using the basic principles shown here, it is easy to see a new way of interacting with SAS using CASL from Python.  By initiating a workflow from Python it would be simple to manage multiple sessions, eliminate the need for the macro language, and use familiar pandas syntax on large tables with multi-threading benefits.  It is also straightforward to incorporate other familiar libraries and leverage the tools of choice for different parts of a workflow, all from a single Python driven process. This SWAT package is also available for R, REST, Java, and LUA!
+
+---
+
+## Wrap-up
+This blog post ended up being much bigger than I initially intended.  The hope is that this way of examining a common, simple challenge, has been helpful. For a deeper understanding of a language, expanding your impression of a new SAS, and even using multiple tools together in a single, more productive workflow!  I welcome your feedback and questions.
