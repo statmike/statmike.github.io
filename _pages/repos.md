@@ -6,7 +6,7 @@ featured_image: /images/aboveclouds.jpg
 ---
 
 ## Recent Projects
-Daily contributor to code base for collaboration between Cleveland Clinic and SAS for modeling population scenarios for COVID-19 to understand useful metric each day of an epidemic, such as number of hospitalizations.
+Daily contributor to the code base for collaboration between Cleveland Clinic and SAS for modeling population scenarios for COVID-19 to understand useful metrics each day of an epidemic, such as the number of hospitalizations.
 * GitHub Repository: [sassoftware/covid-19-sas](https://github.com/sassoftware/covid-19-sas)
 
 SAS PROC MCMC, Jags, Stan, more!
