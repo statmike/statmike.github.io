@@ -12,6 +12,9 @@ I am passionate about computational engineering and work tirelessly to broaden m
 
 ## EXPERIENCE
 
+**Current Public-Facing Work**
+>Leadership and a daily contributor to data for good collaboration between SAS and Cleveland Clinic.  A multi-stage project started as a COVID-19 scenario tool focused on helping hospitals project and plan for daily occupancy during the epidemic.  It has expanded to a visual user-interface being used globally and extended to include resource optimization tools for reopening care facilities for surgical procedures.  I continue to be a daily contributor to [the public GitHub repository](https://github.com/sassoftware/covid-19-sas) for these efforts and enjoy working with and learning from a fantastic team of caring people.
+
 ### SAS; CARY, NORTH CAROLINA - OCTOBER 2012 - PRESENT
 
 **Senior Manager — April 2015 - PRESENT**  
