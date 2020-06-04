@@ -93,7 +93,7 @@ Lead statistician for a new program for cosmetic contact lenses.  While learning
 | Expert Skills | Frequently Used | Developing Skills | Periodic Use Currently |
 |:--:|:--:|:--:|:--:| 
 | git / GitHub / GitLab | SAS 9 / IML | Swift | SAS 9 / OR |
-| SAS 9 / STAT | R | Tensorflow | Perl |
+| SAS 9 / STAT | R | TensorFlow | Perl |
 | Python | Docker | Golang | Matlab |
 | SAS 9 / ETS | Ansible | Kubernetes | C |
 | SAS Viya / CASL | HTML & CSS | PyTorch | Ruby & JS |
@@ -102,8 +102,8 @@ Lead statistician for a new program for cosmetic contact lenses.  While learning
 
 | Server and Virtual Machine | Public Cloud | Containerization | Hybrid Designs |
 |:--:|:--:|:--:|:--:| 
-| Windows Server | Azure | Docker | On Prememsis and Public Cloud |
-| Linux (Redhat, Centos) | Amazon Web Services | Kubernetes | Multi-Cloud Bursting Models |
+| Windows Server | Azure | Docker | On Premises and Public Cloud |
+| Linux | Amazon Web Services | Kubernetes | Multi-Cloud Bursting Models |
 |  | Google Cloud Platform |  |  |
 
 ## CONTACT
