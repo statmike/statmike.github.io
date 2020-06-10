@@ -1,0 +1,13 @@
+open terminal in _pages
+run this
+pandoc resume.md --pdf-engine=xelatex -o resume.pdf
+margin change
+    pandoc -V geometry:margin=1in resume.md --pdf-engine=xelatex -o resume.pdf
+    or
+    add this to yaml header: geometry: margin=1in
+    
+variables: https://pandoc.org/MANUAL.html#variables-for-latex
+tips for command line or header specs: https://stackoverflow.com/questions/13515893/set-margin-size-when-converting-from-markdown-to-pdf-with-pandoc
+
+used pandoc, installed with brew install pandoc
+required xelatex install from its website download
