@@ -27,11 +27,16 @@ I am passionate about computational engineering and work tirelessly to broaden m
 #### Senior Manager — April 2015 - PRESENT
 Leadership for a group of statisticians and specialists focused on solving problems facing hospital systems, health insurance companies, pharmaceutical, device, and clinical research organizations.  A focus on automating processes, augmenting decision making, and efficient architectures that work in the cloud and are scalable.  
 
-* Industry Focus Examples:
+* **Published:** Development of the Contact Lens User Experience: CLUE Scales, [Optom Vis Sci. 2016 Aug; 93(8): 801–808](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4972477/)
+* **Key Public Presentations:**
+  * Connected Monitoring [PHUSE US Connect 2020](http://statmike.com/blog/phuse2020)
+  * Using CAS In SAS Viya for Bootstrap Resampling And Faster Inference For Clinical Trial Results [SAS Global Forum 2020](http://statmike.com/blog/sgf2020p1)
+  * Speaker at a public workshop sponsored by the FDA (2019): [Improving the Implementation of Risk-Based Monitoring Approaches of Clinical Investigations](http://statmike.com/blog/rbm)
+  * Clinical Analytics Workflow Optimization, [DIA 2017](https://dia2017annualmeeting.sched.com/event/AGUq/140-sas-institute-inc-innovation-theater-clinical-analytics-workflow-optimization)
+* **Industry Focused Examples:**
   * Member of SAS Global Industry Advisory Board for Health Care and Life Sciences focused on strategy for product development, organizational focus, partnerships and industry engagement
-  * Speaker at a public workshop sponsored by the FDA: [Improving the Implementation of Risk-Based Monitoring Approaches of Clinical Investigations](http://statmike.com/blog/rbm)
   * Maintain [public GitHub repositories](http://statmike.com/repos) focused on the application and adoption of modern analytical methods for better inference and prediction
-* Additional Sample Projects include:
+* **Additional Sample Projects include:**
   * Architecting a bursting model of distributed and parallelized computation for statistical simulations where users simply call functions that initiate, start, orchestrate, and shutdown clusters of computing across cloud services (AWS, Azure, GCP)
   * Scoring predictive models in a stream of data to trigger integrity feedback to providers
   * Building models with combinations of business rules and machine learning to detect fields needing review in electronic case report forms
@@ -47,17 +52,25 @@ Promoted to manage a team focused on solving problems for all business areas of 
 #### Solutions Architect — October 2012 - October 2013
 Joined SAS and enjoyed the opportunity to get a view of how clinical processes worked across many different device and pharmaceutical companies and work on the most challenging analytical problems they face.  Projects included:
 
-* Validating a signal detection system for drug adverse events while implementing the Bayesian MGPS method in SAS with PROC MCMC.
-* Implementing a drug combination and sequencing model in a high-performance computing environment
-* Parallelizing code for a Bayesian clinical trial simulation tool and a trial subgroup detection method to work on a cluster of computers using SAS.
+* **Public Presentation:** Demonstrating The Ability To Detect Change Using Clue: Contact Lens User Experience?, [Academy 2012](https://www.aaopt.org/detail/knowledge-base-article/demonstrating-ability-detect-change-using-clue-contact-lens-user-experience)
+* **Industry Focused Examples:**
+  * Validating a signal detection system for drug adverse events while implementing the Bayesian MGPS method in SAS with PROC MCMC.
+  * Implementing a drug combination and sequencing model in a high-performance computing environment
+  * Parallelizing code for a Bayesian clinical trial simulation tool and a trial subgroup detection method to work on a cluster of computers using SAS.
 
 ### JOHNSON & JOHNSON; SEPTEMBER 2001 - OCTOBER 2012
 
 #### Manager, Biostatistics — February 2011 - October 2012  
 Reported to the chief medical officer and worked to make the members of my team leaders of clinical programs.  I partnered to build a new data management group focused on expanding clinical data collection to instrument data and PRO data acquisition programs.  We developed a data stage with versioning that allowed analysis from any point in time to be recreated, differenced to any other point in time, and trigger onboard data integrity checks to give partners faster feedback through automation.  We created a two-layer approach to our clinical data model from the data stage, the first step to an internal model that made queries across studies simple and a second step to SDTM.  Participated in multiple FDA submissions and reviews and prepared materials for panel presentations.  Involved in legal review and preparation of evidence to support product development representation in defenses.
 
+* **Public Presentations:** 
+  * Impact Of Questionnaire Length On Quality Of Responses, [Academy 2011](https://www.aaopt.org/detail/knowledge-base-article/impact-questionnaire-length-quality-responses)
+  * Demonstrating Content Validity Of Clue: Contact Lens User Experience, [Academy 2011](https://www.aaopt.org/detail/knowledge-base-article/demonstrating-content-validity-clue-contact-lens-user-experience)
+
 #### Group Leader, Biostatistics — February 2008 - January 2011
 Completed the creation and validation of a PRO instrument trademarked as CLUE: Contact Lens User Experience (now published and in use across the industry).  Further developed the tool for computer-adaptive testing to minimize the number of evaluations a patient needed to participate in and implemented direct data collection outside of clinical visits via SMS and web portals.  This opened up a window into the patients' full day experiences throughout clinical trials and led to the creation of a new data management strategy.  My role expanded to managing the statistical leads for all platforms covering the design of contact lenses, materials development, drug development, and combination drug/device development.  I led a team of statisticians and statistical programmers as well as work conducted at CRO’s and independent partners.  I managed team growth through hiring, training, and coaching, as well as collaboration with adjacent departments.  Additional responsibilities included participation in reviewing investigator-initiated research proposals and developing best practices for research centers doing contract research as an extension of our internally lead clinical trial programs.  I acted as lead statistician for all pediatric programs as we developed drug and device-based approaches to controlling myopia progression.
+
+* **Public Presentation:** Do You Have A Clue Of What Your Patients Think Of Their Contact Lenses? - Development, [Academy 2010](https://www.aaopt.org/detail/knowledge-base-article/do-you-have-clue-what-your-patients-think-their-contact-lenses-development)
 
 #### Senior Biostatistician — February 2006 - February 2008
 An expanded role to include lead biostatistician responsibilities on new pharmaceutical development for vision care.  Initiated a project that started as the quality of life assessment for contact lens wearers.  After showing clinical value, this expanded to begin the creation of a Patient-Reported Outcomes instrument designed along the NIH project PROMIS methodology to create a psychometric tool for accurate and continual patient experiences assessments.  My work as a biostatistician expanded to include: 
