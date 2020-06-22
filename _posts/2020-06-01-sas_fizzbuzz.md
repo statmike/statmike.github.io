@@ -1,7 +1,7 @@
 ---
-title: 'Easy Threading with SAS Viya'
+title: 'Easy Multi-Threading with SAS'
 date: 2020-06-01 00:00:00
-description: A classic programming challenge addressed with SAS, including a highly multi-threaded twist!
+description: A classic programming challenge addressed with SAS, including a highly multi-threaded twist
 featured_image: '/images/blog/fizzbuzz/fizzbuzz_cas4.png'
 tags: types-of-computing sas sas-viya casl
 ---
