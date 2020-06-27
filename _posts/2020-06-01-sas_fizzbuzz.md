@@ -3,7 +3,7 @@ title: 'Easy Multi-Threading with SAS'
 date: 2020-06-01 00:00:00
 description: A classic programming challenge addressed with SAS, including a highly multi-threaded twist
 featured_image: '/images/blog/fizzbuzz/fizzbuzz_cas4.png'
-tags: types-of-computing sas sas-viya casl
+tags: types-of-computing sas sas-viya casl python
 ---
 
 For this post, I address a classic programming challenge with multi-threading. Have you ever heard of FizzBuzz?  Count from 1, and for each integer, evaluate it for divisibility by 3 or 5.  If yes for 3, output 'fizz,' yes for 5, then 'buzz,' both means 'fizzbuzz.'  While this is highly sequential, counting through integers is blatantly parallel if you give different processors a different range of integers to evaluate.

@@ -7,12 +7,15 @@ geometry: margin=1in
 colorlinks: true
 ---
 
----
-
 ## PROFILE
 I am a lifetime learner with a background in statistics. My passion is for quantifying the patient experience in healthcare through better drug and device evaluation in research, development, clinical, and market settings. My career started with over a decade of clinical trial research covering drugs, devices, and combinations.  I focused on inferential methods for patient-reported outcomes, efficient trial design and conduct, and the application of Bayesian methods. The most recent years have built on this experience in a customer advisory role at SAS to help life science, care providers, and healthcare companies apply analytical techniques to understand better and predict the impact of care on the patient experience.
 
 I am passionate about computational engineering and work tirelessly to broaden my exposure. I also utilize a wide range of skills and tools to enable deeper inferential and predictive evaluations of health data in highly creative ways.
+
+---
+
+### Leadership Statement
+The last 19 years have been a blast!  Two companies, 11 years at one the world's largest pharmaceutical companies and 8+ at one of the largest privately-held software companies, both with entirely different cultures.  I have continuously reshaped my style and approach to match as well as counter-balance 11 different bosses and innumerable leadership changes.  My actions and words consistently focus on customers' interests, empowering direct reports, and growing the corporation before my own.  I view leadership as a path that is continually unfolding from all directions.
 
 ---
 
@@ -86,6 +89,11 @@ Promoted to be the lead statistician for all trials related to the design aspect
 #### Biostatistician — September 2001 - June 2002
 Lead statistician for a new program for cosmetic contact lenses.  While learning the on the job skills of biostatistician and statistical programming, I gained valuable experience including FDA submissions, measuring the impact of a manufacturing change on patient experience, working with marketing to accurately message clinical attributes, learning the data workflow of clinical trial processes.
 
+### FOUNDATIONS
+
+#### Jobs Before Graduating
+I grew up in a diverse and very rural area.  Attending a public school with the same classmates from kindergarten through high-school was a unique and fun experience.  My first jobs were helping put up fences and cleaning floors after school.  High-school summers played out assembling air conditioners in an unairconditioned plant.  In college, I started as an exam proctor and moved up to grader and eventually at honors calculus homework grading and tutor.  Graduate school was a progression from teaching undergraduates to assisting with graduate classes.  Success in this was quickly followed by consulting projects with professors across the business school, social sciences, and agriculture.  Continued success led to funding for becoming a research assistant, where I encountered the project that led me to bayesian statistics.
+
 ---
 
 ## EDUCATION
@@ -126,6 +134,10 @@ Lead statistician for a new program for cosmetic contact lenses.  While learning
 | Python | Docker | Golang | Matlab |
 | SAS 9 / STAT & ETS | Ansible | Kubernetes | C |
 | SAS Viya / CASL | HTML & CSS | PyTorch | Ruby & JS |
+
+### Data
+
+My experience covers data of all sizes and shapes: more rows than columns and more columns than rows. From dozens of values from research experiments to distributed data tables measured in terabytes. I am comfortable with accessing data from files, blobs, relational databases, and dozens of cloud technologies. I consider data access, preparation, quality, and governance to be core skills to be a great statistician. It is essential to be able to adapt to data stored in any location, in any format, and any volatility. Including subscribing and publishing to streaming data for near real-time inference and prediction. Authenticating and querying databases, NoSQL sources, Hadoop ecosystem components like HDFS and HIVE, flat files on drives, parallel access of parquet files, or anything needed to make data as close to the analysis runtime as possible. I am incredibly comfortable across the range of SQL writing to engineering a custom parsing engine in the language closest to the data source technology.
 
 ### Familiar Technologies
 
