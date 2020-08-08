@@ -156,4 +156,5 @@ Joint Statistical Meeting Activities:
 
 * 2017 - Session Chair - Interim Monitoring and Analyses: Two-Stage, Multi-Stage, and Group Sequential Designs  
 * 2018 - Session Chair - Bayesian Clustering and Variable Selection
-* 2019 - Mentoring Program
+* 2019 - Mentoring Program 
+* 2020 - Panel participant for "Big Data, Technology Platform and Digital Innovation with Measurable Impact," hosted by the ASA's Text Analytics Interest Group
