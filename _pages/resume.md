@@ -117,7 +117,7 @@ Data Architecture skills for designing
 
 | Server and Virtual Machine | Public Cloud | Containerization | Hybrid Designs |
 |:--:|:--:|:--:|:--:| 
-| Windows Server | Azure | Docker | On Prememsis and Public Cloud |
+| Windows Server | Azure | Docker | On-Premises and Public Cloud |
 | Linux (Redhat, Centos) | Amazon Web Services | Kubernetes | Multi-Cloud Bursting Models |
 |  | Google Cloud Platform |  |  |
 
