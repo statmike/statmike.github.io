@@ -1,7 +1,7 @@
 ---
 title: Repositories
 subtitle: These are some key GitHub repositories that I hope you find interesting
-description: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Believer},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
+description: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Husband},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
 featured_image: /images/aboveclouds.jpg
 ---
 

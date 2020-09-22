@@ -1,7 +1,7 @@
 ---
 title: About me
-subtitle: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Believer},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
-description: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Believer},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
+subtitle: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Husband},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
+description: "{{Creative, Curious, Compassionate},<BR>{Leader, Father, Husband},<BR>{Coder, Data Gentleman, Swell Bayesian}}"
 featured_image: /images/aboveclouds.jpg
 ---
 
