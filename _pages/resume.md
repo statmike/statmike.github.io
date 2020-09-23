@@ -25,7 +25,7 @@ Leadership and a daily contributor to data for good collaboration between SAS an
 ### SAS; CARY, NORTH CAROLINA - OCTOBER 2012 - PRESENT
 
 **Senior Manager — April 2015 - PRESENT**  
-Leadership for a group of statisticians and specialists focused on solving problems facing hospital systems, health insurance companies, pharmaceutical, device, and clinical research organizations.  A focus on automating processes, augmenting decision making, and efficient architectures that work in the cloud and are scalable.  
+Leadership for a group of statisticians and specialists focused on solving problems facing hospital systems, health insurance companies, pharmaceutical, device, and clinical research organizations.  A focus on automating processes, augmenting decision making, and efficient architectures that work in the cloud and are scalable.  In this role, I regularly position analytical architectures to technical users, business leads, and executives from hospital systems, pharmaceutical companies, healthcare insurers, and many supporting organizations.  My days range from digging into the most in-depth details and contextualizing value for executives across this industry.
 
 * Industry Focus Examples:
   * Member of SAS Global Industry Advisory Board for Health Care and Life Sciences focused on strategy for product development, organizational focus, partnerships and industry engagement
@@ -111,8 +111,6 @@ I grew up in a diverse and very rural area.  Attending a public school with the 
 ## Data
 My experience covers data of all sizes and shapes: more rows than columns and more columns than rows. From dozens of values from research experiments to distributed data tables measured in terabytes. I am comfortable with accessing data from files, blobs, relational databases, and dozens of cloud technologies. I consider data access, preparation, quality, and governance to be core skills to be a great statistician. It is essential to be able to adapt to data stored in any location, in any format, and any volatility. Including subscribing and publishing to streaming data for near real-time inference and prediction. Authenticating and querying databases, NoSQL sources, Hadoop ecosystem components like HDFS and HIVE, flat files on drives, parallel access of parquet files, or anything needed to make data as close to the analysis runtime as possible. I am incredibly comfortable across the range of SQL writing to engineering a custom parsing engine in the language closest to the data source technology. 
 
-Data Architecture skills for designing 
-
 ## Familiar Technologies
 
 | Server and Virtual Machine | Public Cloud | Containerization | Hybrid Designs |
@@ -120,9 +118,6 @@ Data Architecture skills for designing
 | Windows Server | Azure | Docker | On-Premises and Public Cloud |
 | Linux (Redhat, Centos) | Amazon Web Services | Kubernetes | Multi-Cloud Bursting Models |
 |  | Google Cloud Platform |  |  |
-
-## CONTACT
-<a href="/contact" class="button button--large">CONTACT ME</a>
 
 ## COMMUNITY
 Member of American Statistical Association since 2001
